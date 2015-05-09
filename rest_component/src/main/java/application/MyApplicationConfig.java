@@ -3,9 +3,9 @@ package application;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import application.domain.Greeting;
 
@@ -25,4 +25,5 @@ public class MyApplicationConfig {
 			}
 		};
 	}
+	
 }
