@@ -15,7 +15,7 @@ public class Test implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="pk_id_test", unique=true, nullable=false)
+	@Column(name="pk_idTest", unique=true, nullable=false)
 	private int pkIdTest;
 
 	@Column(length=45)
