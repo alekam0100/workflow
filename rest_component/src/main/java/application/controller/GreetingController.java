@@ -14,7 +14,6 @@ import application.dataaccess.TestRepository;
 import application.domain.Greeting;
 import application.domain.Test;
 
-@RestController
 @Component
 public class GreetingController {
 
@@ -24,8 +23,6 @@ public class GreetingController {
     @Autowired
     private TestRepository test;
     
-    @RequestMapping(value="/greeting",method=RequestMethod.POST)
-    @ResponseStatus(HttpStatus.OK)
     public Greeting greeting() {
     	Test testObject = new Test();
     	testObject.setText(Long.toString(counter.incrementAndGet()));

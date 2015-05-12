@@ -13,6 +13,7 @@ import application.service.AuthenticationService;
 
 @Component
 public class LoginController {
+	
 	@Autowired
 	private AuthenticationService authService;
 	
