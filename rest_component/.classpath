@@ -59,5 +59,14 @@
 			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/aleks/.m2/repository/org/apache/camel/camel-core/2.15.2/camel-core-2.15.2.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.apache.camel"/>
+			<attribute name="maven.artifactId" value="camel-core"/>
+			<attribute name="maven.version" value="2.15.2"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

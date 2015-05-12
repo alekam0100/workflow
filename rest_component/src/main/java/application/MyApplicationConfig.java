@@ -7,13 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import application.domain.Greeting;
-
 @Configuration
 public class MyApplicationConfig {
 	
 	@Autowired
 	private CamelContext camelContext;
+	
+	@Autowired
+	private AuthenticationProcessor authProcessor;
+	
 	
 	@Bean
 	public RouteBuilder route() {
@@ -21,7 +23,8 @@ public class MyApplicationConfig {
 			@Override
 			public void configure() throws Exception {
 				restConfiguration().component("restlet").host("localhost").port(8080).bindingMode(RestBindingMode.auto);
-				rest().get("/greeting").outType(Greeting.class).to("bean:greetingController?method=greeting");
+				rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
+				rest().post("/login").route().to("bean:loginController?method=login(*)");
 			}
 		};
 	}
