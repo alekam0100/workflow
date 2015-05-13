@@ -25,6 +25,8 @@ public class MyApplicationConfig {
 				restConfiguration().component("restlet").host("localhost").port(8080).bindingMode(RestBindingMode.auto);
 				rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
 				rest().post("/login").route().to("bean:loginController?method=login(*)");
+				rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations");
+				rest().post("/reservation").route().to("bean:reservationController?method=createReservation");
 			}
 		};
 	}

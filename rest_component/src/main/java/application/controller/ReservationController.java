@@ -22,4 +22,10 @@ public class ReservationController {
     public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
+
+    public Reservation createReservation(){
+        Reservation reservation = new Reservation();
+        reservation.setPkIdReservation(123);
+        return reservation;
+    }
 }

@@ -17,4 +17,12 @@ public class Reservation implements Serializable {
     private int pkIdReservation;
 
 
+
+    public int getPkIdReservation() {
+        return pkIdReservation;
+    }
+
+    public void setPkIdReservation(int pkIdReservation) {
+        this.pkIdReservation = pkIdReservation;
+    }
 }
