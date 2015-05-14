@@ -3,6 +3,7 @@ package application.controller;
 import application.MyApplicationConfig;
 import application.domain.Reservation;
 import application.service.ReservationService;
+import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,8 @@ public class ReservationController {
         return reservationService.getAllReservations();
     }
 
-    public Reservation createReservation(/*@RequestBody Reservation reservation*/) {
-        return reservationService.createReservation(new Reservation());
+    public Reservation createReservation(Exchange exchange) {
+        //System.out.println(exchange.getIn().getBody(Reservation.class));
+        return reservationService.createReservation(exchange.getIn().getBody(Reservation.class));
     }
 }

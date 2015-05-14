@@ -1,5 +1,6 @@
 package application;
 
+import application.domain.Reservation;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.rest.RestBindingMode;
@@ -26,7 +27,8 @@ public class MyApplicationConfig {
 				rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
 				rest().post("/login").route().to("bean:loginController?method=login(*)");
 				rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations");
-				rest().post("/reservation").route().to("bean:reservationController?method=createReservation(*)");
+				rest().post("/reservation").consumes("application/json")
+						.type(Reservation.class).route().to("bean:reservationController?method=createReservation(*)");
 			}
 		};
 	}

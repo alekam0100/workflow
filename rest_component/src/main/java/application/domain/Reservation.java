@@ -17,7 +17,6 @@ public class Reservation implements Serializable {
     private int pkIdReservation;
 
 
-
     public int getPkIdReservation() {
         return pkIdReservation;
     }

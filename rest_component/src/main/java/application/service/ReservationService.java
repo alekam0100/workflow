@@ -28,7 +28,7 @@ public class ReservationService {
         System.out.println(reservation);
 //        return reservationRepository.saveAndFlush(reservation);
 //        reservation = new Reservation();
-        reservation.setPkIdReservation(++counter);
+       // reservation.setPkIdReservation(++counter);
         return reservation;
     }
 }
