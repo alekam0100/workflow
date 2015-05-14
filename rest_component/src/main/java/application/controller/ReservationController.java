@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 public class ReservationController {
 
-    private static int counter=10000;
     @Autowired
     private ReservationService reservationService;
 
@@ -25,9 +24,7 @@ public class ReservationController {
         return reservationService.getAllReservations();
     }
 
-    public Reservation createReservation(){
-        Reservation reservation = new Reservation();
-        reservation.setPkIdReservation(++counter);
-        return reservation;
+    public Reservation createReservation(/*@RequestBody Reservation reservation*/) {
+        return reservationService.createReservation(new Reservation());
     }
 }

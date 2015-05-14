@@ -21,4 +21,14 @@ public class ReservationService {
         reservations.add(new Reservation()); // TODO
         return reservations;
     }
+
+    private static int counter = 9000;
+
+    public Reservation createReservation(Reservation reservation) {
+        System.out.println(reservation);
+//        return reservationRepository.saveAndFlush(reservation);
+//        reservation = new Reservation();
+        reservation.setPkIdReservation(++counter);
+        return reservation;
+    }
 }

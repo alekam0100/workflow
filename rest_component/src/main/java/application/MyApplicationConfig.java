@@ -26,7 +26,7 @@ public class MyApplicationConfig {
 				rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
 				rest().post("/login").route().to("bean:loginController?method=login(*)");
 				rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations");
-				rest().post("/reservation").route().to("bean:reservationController?method=createReservation");
+				rest().post("/reservation").route().to("bean:reservationController?method=createReservation(*)");
 			}
 		};
 	}
