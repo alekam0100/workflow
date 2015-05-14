@@ -2,9 +2,9 @@ package application.service;
 
 import application.dataaccess.ReservationRepository;
 import application.domain.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,12 +13,12 @@ import java.util.List;
 @Service
 public class ReservationService {
 
-    //@Autowired
+    @Autowired
     ReservationRepository reservationRepository;
 
     public List<Reservation> getAllReservations() {
-        List<Reservation> output = new ArrayList<>();
-        output.add(new Reservation());
-        return output;
+        List<Reservation> reservations = reservationRepository.findAll();
+        reservations.add(new Reservation()); // TODO
+        return reservations;
     }
 }
