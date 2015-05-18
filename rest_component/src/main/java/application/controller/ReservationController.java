@@ -29,10 +29,12 @@ public class ReservationController {
 		return reservationService.getMyReservations();
 	}
 
-	public Reservation getReservation(String id) {
+	public Reservation getReservation(String id,Exchange exchange) {
+		//System.out.println("id = [" + id + "], exchange = [" + exchange + "]");
 		try {
 			Integer.parseInt(id);
 		} catch (NumberFormatException e) {
+			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "404");
 			return null;
 		}
 		return reservationService.getReservation(Integer.parseInt(id));

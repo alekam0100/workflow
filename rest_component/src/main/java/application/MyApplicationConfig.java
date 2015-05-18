@@ -34,7 +34,7 @@ public class MyApplicationConfig {
 
 				rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
 				rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
-				rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id})");
+				rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
 
 			}
 		};
