@@ -24,4 +24,11 @@ public class Reservation implements Serializable {
     public void setPkIdReservation(int pkIdReservation) {
         this.pkIdReservation = pkIdReservation;
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "pkIdReservation=" + pkIdReservation +
+                '}';
+    }
 }
