@@ -13,22 +13,22 @@ import java.util.List;
 @Service
 public class ReservationService {
 
-    @Autowired
-    ReservationRepository reservationRepository;
+	@Autowired
+	ReservationRepository reservationRepository;
 
-    public List<Reservation> getAllReservations() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        reservations.add(new Reservation()); // TODO
-        return reservations;
-    }
+	public List<Reservation> getAllReservations() {
+		List<Reservation> reservations = reservationRepository.findAll();
+		reservations.add(new Reservation()); // TODO
+		return reservations;
+	}
 
-    private static int counter = 9000;
+	private static int counter = 9000;
 
-    public Reservation createReservation(Reservation reservation) {
-        System.out.println(reservation);
+	public Reservation createReservation(Reservation reservation) {
+		System.out.println(reservation);
 //        return reservationRepository.saveAndFlush(reservation);
 //        reservation = new Reservation();
-       // reservation.setPkIdReservation(++counter);
-        return reservation;
-    }
+		// reservation.setPkIdReservation(++counter);
+		return reservation;
+	}
 }

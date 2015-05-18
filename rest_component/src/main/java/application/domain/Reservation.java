@@ -9,26 +9,26 @@ import java.io.Serializable;
 @Entity
 @NamedQuery(name = "Reservation.findAll", query = "SELECT r FROM Reservation r")
 public class Reservation implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "pk_id_reservation", unique = true, nullable = false)
-    private int pkIdReservation;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "pk_id_reservation", unique = true, nullable = false)
+	private int pkIdReservation;
 
 
-    public int getPkIdReservation() {
-        return pkIdReservation;
-    }
+	public int getPkIdReservation() {
+		return pkIdReservation;
+	}
 
-    public void setPkIdReservation(int pkIdReservation) {
-        this.pkIdReservation = pkIdReservation;
-    }
+	public void setPkIdReservation(int pkIdReservation) {
+		this.pkIdReservation = pkIdReservation;
+	}
 
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "pkIdReservation=" + pkIdReservation +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Reservation{" +
+				"pkIdReservation=" + pkIdReservation +
+				'}';
+	}
 }

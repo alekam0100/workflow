@@ -18,15 +18,15 @@ import java.util.List;
 @Component
 public class ReservationController {
 
-    @Autowired
-    private ReservationService reservationService;
+	@Autowired
+	private ReservationService reservationService;
 
-    public List<Reservation> getAllReservations() {
-        return reservationService.getAllReservations();
-    }
+	public List<Reservation> getAllReservations() {
+		return reservationService.getAllReservations();
+	}
 
-    public Reservation createReservation(Exchange exchange) {
-        //System.out.println(exchange.getIn().getBody(Reservation.class));
-        return reservationService.createReservation(exchange.getIn().getBody(Reservation.class));
-    }
+	public Reservation createReservation(Exchange exchange) {
+		//System.out.println(exchange.getIn().getBody(Reservation.class));
+		return reservationService.createReservation(exchange.getIn().getBody(Reservation.class));
+	}
 }

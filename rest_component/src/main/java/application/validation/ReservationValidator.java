@@ -7,10 +7,10 @@ import application.domain.Reservation;
  */
 public class ReservationValidator {
 
-    public  void validate(Reservation reservation){
-        System.out.println("ReservationValidator.validate");
-        System.out.println("reservation = [" + reservation + "]");
+	public void validate(Reservation reservation) {
+		System.out.println("ReservationValidator.validate");
+		System.out.println("reservation = [" + reservation + "]");
 
-        // TODO do some work
-    }
+		// TODO do some work
+	}
 }
