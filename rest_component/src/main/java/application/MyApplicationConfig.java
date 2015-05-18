@@ -27,10 +27,12 @@ public class MyApplicationConfig {
 				restConfiguration().component("restlet").host("localhost").port(8080).bindingMode(RestBindingMode.auto);
 				rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
 				rest().post("/login").route().to("bean:loginController?method=login(*)");
-				rest().get("/reservationn").route().to("bean:reservationController?method=getAllReservations");
+
 				rest().post("/reservation").consumes("application/json").type(Reservation.class)
 						.route().process(authProcessor).bean(ReservationValidator.class) // auth & validate
 						.to("bean:reservationController?method=createReservation(*)");
+
+				rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
 				rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
 				rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id})");
 

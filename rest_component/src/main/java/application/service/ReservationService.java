@@ -5,6 +5,7 @@ import application.domain.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,19 +17,30 @@ public class ReservationService {
 	@Autowired
 	ReservationRepository reservationRepository;
 
+	public Reservation getReservation(int id) {
+		Reservation reservation = new Reservation();
+		reservation.setPkIdReservation(id);
+		return reservation;
+	}
+
 	public List<Reservation> getAllReservations() {
 		List<Reservation> reservations = reservationRepository.findAll();
 		reservations.add(new Reservation()); // TODO
 		return reservations;
 	}
 
-	private static int counter = 9000;
+	public List<Reservation> getMyReservations() {
+		List<Reservation> reservations = new ArrayList<>();
+		Reservation reservation = new Reservation();
+		reservation.setPkIdReservation(-42);
+		reservations.add(reservation);
+		return reservations;
+	}
+
 
 	public Reservation createReservation(Reservation reservation) {
-		System.out.println(reservation);
-//        return reservationRepository.saveAndFlush(reservation);
-//        reservation = new Reservation();
-		// reservation.setPkIdReservation(++counter);
+//		return reservationRepository.saveAndFlush(reservation);
 		return reservation;
 	}
+
 }
