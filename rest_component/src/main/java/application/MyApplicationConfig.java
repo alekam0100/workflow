@@ -4,6 +4,7 @@ import application.domain.Reservation;
 import application.validation.ReservationValidator;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +31,9 @@ public class MyApplicationConfig {
 
 				rest().post("/reservation").consumes("application/json").type(Reservation.class)
 						.route().process(authProcessor).bean(ReservationValidator.class) // auth & validate
-						.to("bean:reservationController?method=createReservation(*)");
+						.marshal().json(JsonLibrary.Jackson).wireTap("file://reservations").end()
+						.unmarshal().json(JsonLibrary.Jackson, Reservation.class).to("bean:reservationController?method=createReservation(*)")
+				;
 
 				rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
 				rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
