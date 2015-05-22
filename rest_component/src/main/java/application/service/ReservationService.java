@@ -5,6 +5,7 @@ import application.domain.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,4 +44,14 @@ public class ReservationService {
 		return reservation;
 	}
 
+	public boolean checkIn(int tableId, int userId, Timestamp timestamp){
+		Reservation reservation = reservationRepository.findByTableIdAndUserIdAndTime(tableId, userId, timestamp);
+		if (reservation != null) {
+			reservation.setFkIdReservationstatus(3); // status for checked-in
+			reservationRepository.saveAndFlush(reservation);
+			return true;
+		}
+		else
+			return false; //checkin not successful
+	}
 }
