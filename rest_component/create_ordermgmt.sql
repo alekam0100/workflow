@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`user` (
   `pk_id_user` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NULL,
   `password` VARCHAR(45) NULL,
+  `token` VARCHAR(45) NULL,
   PRIMARY KEY (`pk_id_user`),
   UNIQUE INDEX `pk_idUser_UNIQUE` (`pk_id_user` ASC))
 ENGINE = InnoDB;
@@ -54,12 +55,19 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`table` (
   `pk_id_table` INT NOT NULL AUTO_INCREMENT,
   `max_person` INT NULL,
   `fk_id_tablestatus` INT NULL,
+  `fk_id_waiterstatus` INT NULL,
   PRIMARY KEY (`pk_id_table`),
   UNIQUE INDEX `pk_idTable_UNIQUE` (`pk_id_table` ASC),
   INDEX `fk_table_tableStatus1_idx` (`fk_id_tablestatus` ASC),
+  INDEX `fk_table_waiterStatus1_idx` (`fk_id_waiterStatus` ASC),
   CONSTRAINT `fk_table_tableStatus1`
     FOREIGN KEY (`fk_id_tablestatus`)
     REFERENCES `ordermgmt`.`tablestatus` (`pk_id_tablestatus`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_table_waiterStatus1`
+    FOREIGN KEY (`fk_id_waiterStatus`)
+    REFERENCES `ordermgmt`.`waiterStatus` (`pk_id_waiterStatus`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -71,26 +79,20 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `ordermgmt`.`customer` ;
 
 CREATE TABLE IF NOT EXISTS `ordermgmt`.`customer` (
-  `firstname` VARCHAR(45) NULL,
-  `lastname` VARCHAR(45) NULL,
-  `date_birth` DATETIME NULL,
+  `first_name` VARCHAR(45) NULL,
+  `last_name` VARCHAR(45) NULL,
+  `birth_date` DATETIME NULL,
   `street` VARCHAR(45) NULL,
-  `houseno` INT NULL,
-  `postcode` VARCHAR(45) NULL,
+  `house_no` INT NULL,
+  `post_code` VARCHAR(45) NULL,
   `city` VARCHAR(45) NULL,
   `country` VARCHAR(45) NULL,
   `fk_id_user` INT NOT NULL,
-  `fk_id_table` INT NULL,
+  `email` VARCHAR(45) NULL,
   PRIMARY KEY (`fk_id_user`),
-  INDEX `fk_customer_table1_idx` (`fk_id_table` ASC),
   CONSTRAINT `fk_customer_user`
     FOREIGN KEY (`fk_id_user`)
     REFERENCES `ordermgmt`.`user` (`pk_id_user`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_customer_table1`
-    FOREIGN KEY (`fk_id_table`)
-    REFERENCES `ordermgmt`.`table` (`pk_id_table`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -281,7 +283,7 @@ DROP TABLE IF EXISTS `ordermgmt`.`food` ;
 
 CREATE TABLE IF NOT EXISTS `ordermgmt`.`food` (
   `pk_id_food` INT NOT NULL AUTO_INCREMENT,
-  `netto_price` DOUBLE NULL,
+  `net_price` DOUBLE NULL,
   `available` TINYINT(1) NOT NULL DEFAULT 1,
   `name` VARCHAR(255) NULL,
   `description` VARCHAR(255) NULL,
@@ -349,6 +351,18 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`test` (
   `text` VARCHAR(45) NULL,
   PRIMARY KEY (`pk_id_test`),
   UNIQUE INDEX `pk_idTest_UNIQUE` (`pk_id_test` ASC))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `ordermgmt`.`waiterstatus`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `ordermgmt`.`waiterstatus` ;
+
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`waiterstatus` (
+  `pk_id_waiterstatus` INT NOT NULL AUTO_INCREMENT,
+  `status` VARCHAR(45) NULL,
+  PRIMARY KEY (`pk_id_waiterstatus`),
+  UNIQUE INDEX `pk_idWaiterStatus_UNIQUE` (`pk_id_waiterstatus` ASC))
 ENGINE = InnoDB;
 
 

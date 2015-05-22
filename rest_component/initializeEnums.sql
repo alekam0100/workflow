@@ -19,18 +19,18 @@ DELETE FROM `ordermgmt`.`sizeunit`;
 INSERT INTO `ordermgmt`.`sizeunit` VALUES (1,'liter'),(2,'centiliter'),(3,'milliliter'),(4,'gram'),(5,'kilogram');
 
 DELETE FROM `ordermgmt`.`reservationstatus`;
-INSERT INTO `ordermgmt`.`reservationstatus` VALUES (1,'valid'),(2,'cancelled');
+INSERT INTO `ordermgmt`.`reservationstatus` VALUES (1,'valid'),(2,'cancelled'), (3, 'checked-in');
 
 DELETE FROM `ordermgmt`.`waiterstatus`;
 INSERT INTO `ordermgmt`.`waiterstatus` VALUES (1,'none'),(2,'waiter'),(3,'bill');
 
 -- Insert testdata --
 DELETE FROM `ordermgmt`.`user`;
-INSERT INTO `ordermgmt`.`user` VALUES (NULL,'user','x',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (NULL,'kitchen','pwd',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (NULL,'manager','pwd',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (NULL,'waiter','pwd',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (NULL,'bar','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` VALUES (1,'user','x',NULL);
+INSERT INTO `ordermgmt`.`user` VALUES (2,'kitchen','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` VALUES (3,'manager','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` VALUES (4,'waiter','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` VALUES (5,'bar','pwd',NULL);
 
 
 DELETE FROM `ordermgmt`.`customer`;
@@ -44,5 +44,9 @@ INSERT INTO `ordermgmt`.`food` (`pk_id_food`, `net_price`, `available`, `name`, 
 DELETE FROM `ordermgmt`.`table`;
 INSERT INTO `ordermgmt`.`table` (`pk_id_table`, `max_person`, `fk_id_tablestatus`, `fk_id_waiterstatus`) VALUES (NULL, '4', '1','1');
 INSERT INTO `ordermgmt`.`table` (`pk_id_table`, `max_person`, `fk_id_tablestatus`, `fk_id_waiterstatus`) VALUES (NULL, '2', '1', '1');
+
+delete from `ordermgmt`.`reservation`;
+INSERT INTO `ordermgmt`.`reservation` (`pk_id_reservation`, `time_from`, `time_to`, `persons`, `reservationcol`, `fk_id_user`, `fk_id_table`, `fk_id_reservationstatus`)
+VALUES (NULL, '2015-05-10 16:00:00', '2015-05-10 18:00:00', 4, "", 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS=1;
