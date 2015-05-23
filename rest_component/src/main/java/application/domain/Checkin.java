@@ -3,9 +3,6 @@ package application.domain;
 
 import javax.persistence.*;
 
-/**
- * @author Ivan Gavrilović
- */
 @Entity
 public class Checkin {
     private static final long serialVersionUID = 1L;

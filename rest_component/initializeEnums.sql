@@ -37,7 +37,7 @@ DELETE FROM `ordermgmt`.`customer`;
 INSERT INTO `ordermgmt`.`customer` (`first_name`, `last_name`, `birth_date`, `street`, `house_no`, `post_code`, `city`, `country`, `fk_id_user`, `email`) VALUES ('Test', 'Person', '1990-01-01 00:00:00', 'Teststreet', '1', '1010', 'Vienna', 'Austria', '1', 'test@domain.at');
 
 DELETE FROM `ordermgmt`.`food`;
-INSERT INTO `ordermgmt`.`food` (`pk_id_food`, `net_price`, `available`, `name`, `description`, `fk_id_food_type`, `size`, `fk_id_size_unit`) VALUES (NULL, '10', '1', 'WienerSchnitzel', 'Wiener Schnitzel nit Pommes', '2', NULL, NULL);
+INSERT INTO `ordermgmt`.`food` (`pk_id_food`, `net_price`, `available`, `name`, `description`, `fk_id_food_type`, `size`, `fk_id_size_unit`) VALUES (NULL, '10', '1', 'WienerSchnitzel', 'Wiener Schnitzel mit Pommes', '2', NULL, NULL);
 INSERT INTO `ordermgmt`.`food` (`pk_id_food`, `net_price`, `available`, `name`, `description`, `fk_id_food_type`, `size`, `fk_id_size_unit`) VALUES (NULL, '3', '1', 'Rindsuppe', 'Rindsuppe mit Nudeln', '2', NULL, NULL);
 INSERT INTO `ordermgmt`.`food` (`pk_id_food`, `net_price`, `available`, `name`, `description`, `fk_id_food_type`, `size`, `fk_id_size_unit`) VALUES (NULL, '5', '1', 'Mojito', 'Mojito', '1', NULL, NULL);
 

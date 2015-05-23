@@ -76,7 +76,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findByTableAndTimeFromLessThanAndTimeToGreaterThan
                 (tableId, halfHourLater, halfHourLater);
         if (reservation != null && reservation.getFkIdUser() != user.getPkIdUser())
-            // there is a reservation not made by this user in less than 30mins
+            // there is a reservation not made by this user that start in less than 30mins, or ends in more than 30mins
             return false;
 
         // either, there is no reservation for this table - we are free to checkin

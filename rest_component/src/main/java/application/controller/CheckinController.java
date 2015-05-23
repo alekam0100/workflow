@@ -8,9 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
-/**
- * @author Ivan Gavrilović
- */
 @Component
 public class CheckinController {
     @Autowired

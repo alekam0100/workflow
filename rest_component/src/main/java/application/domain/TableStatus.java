@@ -17,7 +17,7 @@ public class TableStatus implements Serializable {
 	@Column(name = "pk_id_table_status", unique = true, nullable = false)
 	private int pkIdTablestatus;
 
-	@Column(name = "status", nullable = false)
+	@Column(name = "status", nullable = true)
 	private String status;
 
 	public int getPkIdTablestatus() {

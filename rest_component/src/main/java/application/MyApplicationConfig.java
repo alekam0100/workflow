@@ -44,14 +44,16 @@ public class MyApplicationConfig {
                 rest().post("/facebook").route().process(authProcessor).to("bean:checkinController?method=facebook(*)")
                         .to("facebook://postStatusMessage?message=I%20just%20checked%20into%20restaurant");
 
-                rest().post("/twitter").route().process(authProcessor).to("bean:checkinController?method=facebook(*)")
+                rest().post("/twitter").route().process(authProcessor).to("bean:checkinController?method=twitter(*)")
                         .setBody(constant("I just checked into restaurant."))
-                        .to("twitter://timeline/user?consumerKey=0jUNvvJfB6vTxuGsLxAUfnft9" +
+                        .to("twitter://timeline/user?" +
+                                "consumerKey=0jUNvvJfB6vTxuGsLxAUfnft9" +
                                 "&consumerSecret=FA5lOeaxCjks2AmUNyWWreVM9Zf7CiUSqodOfYPPYxdVlckD0t" +
                                 "&accessToken=906126062-U2EnxiQKTVPZV4D3v0LeE6B1yKhM0CCVGBjWgxE6" +
                                 "&accessTokenSecret=3KOWxtDJtal0tiuKRShTyz5XpJdPntBDcUewsstp2cUyL");
 
                 rest().post("/checkin").route().process(authProcessor).to("bean:checkinController?method=checkin(*)");
+                rest().get("/food").route().process(authProcessor).to("bean:foodController?method=food(*)");
             }
         };
     }
