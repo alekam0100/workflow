@@ -17,14 +17,23 @@ public class CheckinController {
     private ReservationService reservationService;
 
     public boolean checkin(@Header("org.restlet.http.headers") Series headers) throws Exception {
-        if (headers.getFirstValue("X-tableid") == null || headers.getFirstValue("X-userid") == null
-                || headers.getFirstValue("X-timestamp") == null) {
+        if (headers.getFirstValue("X-tableid") == null || headers.getFirstValue("X-timestamp") == null) {
             throw new Exception("Missing data for checkin.");
         }
-        Integer userId = Integer.parseInt(headers.getFirstValue("X-userid"));
+        String token = headers.getFirstValue("X-auth-token");
         Integer tableId = Integer.parseInt(headers.getFirstValue("X-tableid"));
         Timestamp timestamp = Timestamp.valueOf(headers.getFirstValue("X-timestamp"));
 
-        return reservationService.checkIn(tableId, userId, timestamp);
+        return reservationService.checkIn(tableId, token, timestamp);
+    }
+
+    public boolean facebook(@Header("org.restlet.http.headers") Series headers) throws Exception {
+        String token = headers.getFirstValue("X-auth-token");
+        return reservationService.isCheckedIn(token);
+    }
+
+    public boolean twitter(@Header("org.restlet.http.headers") Series headers) throws Exception {
+        String token = headers.getFirstValue("X-auth-token");
+        return reservationService.isCheckedIn(token);
     }
 }

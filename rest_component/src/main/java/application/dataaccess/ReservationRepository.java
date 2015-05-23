@@ -9,8 +9,8 @@ import java.sql.Timestamp;
 
 
 //@Repository
-public interface ReservationRepository  extends JpaRepository<Reservation, Integer> {
-    @Query("select r from Reservation r where r.fkIdTable = ?1  and r.fkIdUser = ?2 and r.fkIdReservationstatus = 1 " +
-            "and ?3 >= r.timeFrom and ?3 < r.timeTo")
-    Reservation findByTableIdAndUserIdAndTime(int tableId, int userId, Timestamp time);
+public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
+    @Query("select r from Reservation r where r.fkIdRestaurantTable = ?1  and r.fkIdReservationStatus = 1 " +
+            "and r.timeFrom <= ?2 and r.timeTo > ?3")
+    Reservation findByTableAndTimeFromLessThanAndTimeToGreaterThan(int tableId, Timestamp timeFrom, Timestamp timeTo);
 }

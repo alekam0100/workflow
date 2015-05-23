@@ -24,14 +24,14 @@ public class Reservation implements Serializable {
 	@Column(name = "time_to", nullable = false)
 	private Timestamp timeTo;
 
-	@Column(name="fk_id_table", nullable=false)
-	private int fkIdTable;
+	@Column(name="fk_id_restaurant_table", nullable=false)
+	private int fkIdRestaurantTable;
 
 	@Column(name="fk_id_user", nullable=false)
 	private int fkIdUser;
 
-	@Column(name="fk_id_reservationstatus", nullable=false)
-	private int fkIdReservationstatus;
+	@Column(name="fk_id_reservation_status", nullable=false)
+	private int fkIdReservationStatus;
 
 	public int getPkIdReservation() {
 		return pkIdReservation;
@@ -41,12 +41,12 @@ public class Reservation implements Serializable {
 		this.pkIdReservation = pkIdReservation;
 	}
 
-	public int getFkIdTable() {
-		return fkIdTable;
+	public int getFkIdRestaurantTable() {
+		return fkIdRestaurantTable;
 	}
 
-	public void setFkIdTable(int fkIdTable) {
-		this.fkIdTable = fkIdTable;
+	public void setFkIdRestaurantTable(int fkIdRestaurantTable) {
+		this.fkIdRestaurantTable = fkIdRestaurantTable;
 	}
 
 	public int getFkIdUser() {
@@ -58,11 +58,11 @@ public class Reservation implements Serializable {
 	}
 
 	public int getFkIdReservationstatus() {
-		return fkIdReservationstatus;
+		return fkIdReservationStatus;
 	}
 
-	public void setFkIdReservationstatus(int fkIdReservationstatus) {
-		this.fkIdReservationstatus = fkIdReservationstatus;
+	public void setFkIdReservationStatus(int fkIdReservationStatus) {
+		this.fkIdReservationStatus = fkIdReservationStatus;
 	}
 
 	public Timestamp getTimeFrom() {
@@ -85,7 +85,7 @@ public class Reservation implements Serializable {
 	public String toString() {
 		return "Reservation{" +
 				"pkIdReservation=" + pkIdReservation +
-				"fkIdTable=" + fkIdTable +
+				"fkIdRestaurantTable=" + fkIdRestaurantTable +
 				'}';
 	}
 }

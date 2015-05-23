@@ -34,40 +34,40 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`tablestatus`
+-- Table `ordermgmt`.`table_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`tablestatus` ;
+DROP TABLE IF EXISTS `ordermgmt`.`table_status` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`tablestatus` (
-  `pk_id_tablestatus` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`table_status` (
+  `pk_id_table_status` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_tablestatus`),
-  UNIQUE INDEX `pk_idTableStatus_UNIQUE` (`pk_id_tablestatus` ASC))
+  PRIMARY KEY (`pk_id_table_status`),
+  UNIQUE INDEX `pk_id_table_status_UNIQUE` (`pk_id_table_status` ASC))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`table`
+-- Table `ordermgmt`.`restaurant_table`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`table` ;
+DROP TABLE IF EXISTS `ordermgmt`.`restaurant_table` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`table` (
-  `pk_id_table` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`restaurant_table` (
+  `pk_id_restaurant_table` INT NOT NULL AUTO_INCREMENT,
   `max_person` INT NULL,
-  `fk_id_tablestatus` INT NULL,
-  `fk_id_waiterstatus` INT NULL,
-  PRIMARY KEY (`pk_id_table`),
-  UNIQUE INDEX `pk_idTable_UNIQUE` (`pk_id_table` ASC),
-  INDEX `fk_table_tableStatus1_idx` (`fk_id_tablestatus` ASC),
-  INDEX `fk_table_waiterStatus1_idx` (`fk_id_waiterStatus` ASC),
-  CONSTRAINT `fk_table_tableStatus1`
-    FOREIGN KEY (`fk_id_tablestatus`)
-    REFERENCES `ordermgmt`.`tablestatus` (`pk_id_tablestatus`)
+  `fk_id_table_status` INT NULL,
+  `fk_id_waiter_status` INT NULL,
+  PRIMARY KEY (`pk_id_restaurant_table`),
+  UNIQUE INDEX `pk_id_restaurant_table_UNIQUE` (`pk_id_restaurant_table` ASC),
+  INDEX `fk_table_table_status1_idx` (`fk_id_table_status` ASC),
+  INDEX `fk_table_waiter_status1_idx` (`fk_id_waiter_status` ASC),
+  CONSTRAINT `fk_table_table_status1`
+    FOREIGN KEY (`fk_id_table_status`)
+    REFERENCES `ordermgmt`.`table_status` (`pk_id_table_status`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_table_waiterStatus1`
-    FOREIGN KEY (`fk_id_waiterStatus`)
-    REFERENCES `ordermgmt`.`waiterStatus` (`pk_id_waiterStatus`)
+  CONSTRAINT `fk_table_waiter_status1`
+    FOREIGN KEY (`fk_id_waiter_status`)
+    REFERENCES `ordermgmt`.`waiter_status` (`pk_id_waiter_status`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -97,17 +97,42 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`customer` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `ordermgmt`.`checkin`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `ordermgmt`.`checkin` ;
+
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`checkin` (
+  `pk_id_checkin` INT NOT NULL AUTO_INCREMENT,
+  `fk_id_customer` INT NULL,
+  `fk_id_restaurant_table` INT NULL,
+  PRIMARY KEY (`pk_id_checkin`),
+  UNIQUE INDEX `pk_idCheckin_UNIQUE` (`pk_id_checkin` ASC),
+  INDEX `fk_checkin_Customer1_idx` (`fk_id_customer` ASC),
+  INDEX `fk_checkin_Table1_idx` (`fk_id_restaurant_table` ASC),
+  CONSTRAINT `fk_checkin_Customer1`
+    FOREIGN KEY (`fk_id_customer`)
+    REFERENCES `ordermgmt`.`customer` (`fk_id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_checkin_Table1`
+    FOREIGN KEY (`fk_id_restaurant_table`)
+    REFERENCES `ordermgmt`.`restaurant_table` (`pk_id_restaurant_table`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`reservationstatus`
+-- Table `ordermgmt`.`reservation_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`reservationstatus` ;
+DROP TABLE IF EXISTS `ordermgmt`.`reservation_status` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`reservationstatus` (
-  `pk_id_reservationstatus` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`reservation_status` (
+  `pk_id_reservation_status` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_reservationstatus`),
-  UNIQUE INDEX `pk_idReservationStatus_UNIQUE` (`pk_id_reservationstatus` ASC))
+  PRIMARY KEY (`pk_id_reservation_status`),
+  UNIQUE INDEX `pk_id_reservation_status_UNIQUE` (`pk_id_reservation_status` ASC))
 ENGINE = InnoDB;
 
 
@@ -121,43 +146,43 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`reservation` (
   `time_from` TIMESTAMP NULL,
   `time_to` TIMESTAMP NULL,
   `persons` INT NULL,
-  `reservationcol` VARCHAR(45) NULL,
+  `reservation_col` VARCHAR(45) NULL,
   `fk_id_user` INT NULL,
-  `fk_id_table` INT NULL,
-  `fk_id_reservationstatus` INT NULL,
+  `fk_id_restaurant_table` INT NULL,
+  `fk_id_reservation_status` INT NULL,
   PRIMARY KEY (`pk_id_reservation`),
   UNIQUE INDEX `pk_idReservation_UNIQUE` (`pk_id_reservation` ASC),
   INDEX `fk_reservation_customer1_idx` (`fk_id_user` ASC),
-  INDEX `fk_reservation_table1_idx` (`fk_id_table` ASC),
-  INDEX `fk_reservation_reservationStatus1_idx` (`fk_id_reservationstatus` ASC),
+  INDEX `fk_reservation_table1_idx` (`fk_id_restaurant_table` ASC),
+  INDEX `fk_reservation_reservation_status1_idx` (`fk_id_reservation_status` ASC),
   CONSTRAINT `fk_reservation_customer1`
     FOREIGN KEY (`fk_id_user`)
     REFERENCES `ordermgmt`.`customer` (`fk_id_user`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_reservation_table1`
-    FOREIGN KEY (`fk_id_table`)
-    REFERENCES `ordermgmt`.`table` (`pk_id_table`)
+    FOREIGN KEY (`fk_id_restaurant_table`)
+    REFERENCES `ordermgmt`.`restaurant_table` (`pk_id_restaurant_table`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_reservation_reservationStatus1`
-    FOREIGN KEY (`fk_id_reservationstatus`)
-    REFERENCES `ordermgmt`.`reservationstatus` (`pk_id_reservationstatus`)
+  CONSTRAINT `fk_reservation_reservation_status1`
+    FOREIGN KEY (`fk_id_reservation_status`)
+    REFERENCES `ordermgmt`.`reservation_status` (`pk_id_reservation_status`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`billstatus`
+-- Table `ordermgmt`.`bill_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`billstatus` ;
+DROP TABLE IF EXISTS `ordermgmt`.`bill_status` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`billstatus` (
-  `pk_id_billstatus` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`bill_status` (
+  `pk_id_bill_status` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_billstatus`),
-  UNIQUE INDEX `pk_idBillStatus_UNIQUE` (`pk_id_billstatus` ASC))
+  PRIMARY KEY (`pk_id_bill_status`),
+  UNIQUE INDEX `pk_id_bill_status_UNIQUE` (`pk_id_bill_status` ASC))
 ENGINE = InnoDB;
 
 
@@ -169,28 +194,28 @@ DROP TABLE IF EXISTS `ordermgmt`.`bill` ;
 CREATE TABLE IF NOT EXISTS `ordermgmt`.`bill` (
   `pk_id_bill` INT NOT NULL AUTO_INCREMENT,
   `issuing_date` DATETIME NULL,
-  `fk_id_billstatus` INT NULL,
+  `fk_id_bill_status` INT NULL,
   PRIMARY KEY (`pk_id_bill`),
   UNIQUE INDEX `pk_idBill_UNIQUE` (`pk_id_bill` ASC),
-  INDEX `fk_bill_billStatus1_idx` (`fk_id_billstatus` ASC),
-  CONSTRAINT `fk_bill_billStatus1`
-    FOREIGN KEY (`fk_id_billstatus`)
-    REFERENCES `ordermgmt`.`billstatus` (`pk_id_billstatus`)
+  INDEX `fk_bill_bill_status1_idx` (`fk_id_bill_status` ASC),
+  CONSTRAINT `fk_bill_bill_status1`
+    FOREIGN KEY (`fk_id_bill_status`)
+    REFERENCES `ordermgmt`.`bill_status` (`pk_id_bill_status`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`orderstatus`
+-- Table `ordermgmt`.`order_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`orderstatus` ;
+DROP TABLE IF EXISTS `ordermgmt`.`order_status` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`orderstatus` (
-  `pk_id_orderstatus` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`order_status` (
+  `pk_id_order_status` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_orderstatus`),
-  UNIQUE INDEX `pk_idOrderStatus_UNIQUE` (`pk_id_orderstatus` ASC))
+  PRIMARY KEY (`pk_id_order_status`),
+  UNIQUE INDEX `pk_id_order_status_UNIQUE` (`pk_id_order_status` ASC))
 ENGINE = InnoDB;
 
 
@@ -201,9 +226,9 @@ DROP TABLE IF EXISTS `ordermgmt`.`order` ;
 
 CREATE TABLE IF NOT EXISTS `ordermgmt`.`order` (
   `pk_id_order` INT NOT NULL AUTO_INCREMENT,
-  `fk_id_orderstatus` INT NULL,
+  `fk_id_order_status` INT NULL,
   `comment` VARCHAR(1023) NULL,
-  `creationtime` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `creation_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `fk_id_user` INT NULL,
   `fk_id_reservation` INT NULL,
   `fk_id_bill` INT NULL,
@@ -212,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`order` (
   INDEX `fk_order_customer1_idx` (`fk_id_user` ASC),
   INDEX `fk_order_reservation1_idx` (`fk_id_reservation` ASC),
   INDEX `fk_order_bill1_idx` (`fk_id_bill` ASC),
-  INDEX `fk_order_orderStatus1_idx` (`fk_id_orderstatus` ASC),
+  INDEX `fk_order_order_status1_idx` (`fk_id_order_status` ASC),
   CONSTRAINT `fk_order_customer1`
     FOREIGN KEY (`fk_id_user`)
     REFERENCES `ordermgmt`.`customer` (`fk_id_user`)
@@ -228,51 +253,51 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`order` (
     REFERENCES `ordermgmt`.`bill` (`pk_id_bill`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_order_orderStatus1`
-    FOREIGN KEY (`fk_id_orderstatus`)
-    REFERENCES `ordermgmt`.`orderstatus` (`pk_id_orderstatus`)
+  CONSTRAINT `fk_order_order_status1`
+    FOREIGN KEY (`fk_id_order_status`)
+    REFERENCES `ordermgmt`.`order_status` (`pk_id_order_status`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`orderitemstatus`
+-- Table `ordermgmt`.`order_item_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`orderitemstatus` ;
+DROP TABLE IF EXISTS `ordermgmt`.`order_item_status` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`orderitemstatus` (
-  `pk_id_orderitemstatus` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`order_item_status` (
+  `pk_id_order_item_status` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_orderitemstatus`),
-  UNIQUE INDEX `pk_idOrderItemStatus_UNIQUE` (`pk_id_orderitemstatus` ASC))
+  PRIMARY KEY (`pk_id_order_item_status`),
+  UNIQUE INDEX `pk_id_order_item_status_UNIQUE` (`pk_id_order_item_status` ASC))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`foodtype`
+-- Table `ordermgmt`.`food_type`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`foodtype` ;
+DROP TABLE IF EXISTS `ordermgmt`.`food_type` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`foodtype` (
-  `pk_idFoodType` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`food_type` (
+  `pk_id_food_type` INT NOT NULL AUTO_INCREMENT,
   `tax` DOUBLE NULL,
   `type` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_idFoodType`),
-  UNIQUE INDEX `pk_idFoodType_UNIQUE` (`pk_idFoodType` ASC))
+  PRIMARY KEY (`pk_id_food_type`),
+  UNIQUE INDEX `pk_id_food_type_UNIQUE` (`pk_id_food_type` ASC))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`sizeunit`
+-- Table `ordermgmt`.`size_unit`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`sizeunit` ;
+DROP TABLE IF EXISTS `ordermgmt`.`size_unit` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`sizeunit` (
-  `pk_id_sizeunit` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`size_unit` (
+  `pk_id_size_unit` INT NOT NULL AUTO_INCREMENT,
   `unit` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_sizeunit`),
-  UNIQUE INDEX `pk_idSizeUnit_UNIQUE` (`pk_id_sizeunit` ASC))
+  PRIMARY KEY (`pk_id_size_unit`),
+  UNIQUE INDEX `pk_id_size_unit_UNIQUE` (`pk_id_size_unit` ASC))
 ENGINE = InnoDB;
 
 
@@ -287,53 +312,53 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`food` (
   `available` TINYINT(1) NOT NULL DEFAULT 1,
   `name` VARCHAR(255) NULL,
   `description` VARCHAR(255) NULL,
-  `fk_id_foodtype` INT NULL,
+  `fk_id_food_type` INT NULL,
   `size` DOUBLE NULL,
-  `fk_id_sizeunit` INT NULL,
+  `fk_id_size_unit` INT NULL,
   PRIMARY KEY (`pk_id_food`),
   UNIQUE INDEX `pk_idFood_UNIQUE` (`pk_id_food` ASC),
-  INDEX `fk_food_foodType1_idx` (`fk_id_foodtype` ASC),
-  INDEX `fk_food_sizeUnit1_idx` (`fk_id_sizeunit` ASC),
-  CONSTRAINT `fk_food_foodType1`
-    FOREIGN KEY (`fk_id_foodtype`)
-    REFERENCES `ordermgmt`.`foodtype` (`pk_idFoodType`)
+  INDEX `fk_food_food_type1_idx` (`fk_id_food_type` ASC),
+  INDEX `fk_food_size_unit1_idx` (`fk_id_size_unit` ASC),
+  CONSTRAINT `fk_food_food_type1`
+    FOREIGN KEY (`fk_id_food_type`)
+    REFERENCES `ordermgmt`.`food_type` (`pk_id_food_type`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_food_sizeUnit1`
-    FOREIGN KEY (`fk_id_sizeunit`)
-    REFERENCES `ordermgmt`.`sizeunit` (`pk_id_sizeunit`)
+  CONSTRAINT `fk_food_size_unit1`
+    FOREIGN KEY (`fk_id_size_unit`)
+    REFERENCES `ordermgmt`.`size_unit` (`pk_id_size_unit`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`orderitem`
+-- Table `ordermgmt`.`order_item`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`orderitem` ;
+DROP TABLE IF EXISTS `ordermgmt`.`order_item` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`orderitem` (
-  `pk_id_orderitem` INT NOT NULL AUTO_INCREMENT,
-  `fk_id_orderitemstatus` INT NULL,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`order_item` (
+  `pk_id_order_item` INT NOT NULL AUTO_INCREMENT,
+  `fk_id_order_item_status` INT NULL,
   `comment` VARCHAR(1023) NULL,
   `fk_id_order` INT NULL,
   `fk_id_food` INT NULL,
-  PRIMARY KEY (`pk_id_orderitem`),
-  UNIQUE INDEX `idOrderItem_UNIQUE` (`pk_id_orderitem` ASC),
-  INDEX `fk_orderItem_order1_idx` (`fk_id_order` ASC),
-  INDEX `fk_orderItem_orderItemStatus1_idx` (`fk_id_orderitemstatus` ASC),
-  INDEX `fk_orderItem_food1_idx` (`fk_id_food` ASC),
-  CONSTRAINT `fk_orderItem_order1`
+  PRIMARY KEY (`pk_id_order_item`),
+  UNIQUE INDEX `id_order_item_UNIQUE` (`pk_id_order_item` ASC),
+  INDEX `fk_order_item_order1_idx` (`fk_id_order` ASC),
+  INDEX `fk_order_item_order_item_status1_idx` (`fk_id_order_item_status` ASC),
+  INDEX `fk_order_item_food1_idx` (`fk_id_food` ASC),
+  CONSTRAINT `fk_order_item_order1`
     FOREIGN KEY (`fk_id_order`)
     REFERENCES `ordermgmt`.`order` (`pk_id_order`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_orderItem_orderItemStatus1`
-    FOREIGN KEY (`fk_id_orderitemstatus`)
-    REFERENCES `ordermgmt`.`orderitemstatus` (`pk_id_orderitemstatus`)
+  CONSTRAINT `fk_order_item_order_item_status1`
+    FOREIGN KEY (`fk_id_order_item_status`)
+    REFERENCES `ordermgmt`.`order_item_status` (`pk_id_order_item_status`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_orderItem_food1`
+  CONSTRAINT `fk_order_item_food1`
     FOREIGN KEY (`fk_id_food`)
     REFERENCES `ordermgmt`.`food` (`pk_id_food`)
     ON DELETE NO ACTION
@@ -354,15 +379,15 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`test` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`waiterstatus`
+-- Table `ordermgmt`.`waiter_status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`waiterstatus` ;
+DROP TABLE IF EXISTS `ordermgmt`.`waiter_status` ;
 
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`waiterstatus` (
-  `pk_id_waiterstatus` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `ordermgmt`.`waiter_status` (
+  `pk_id_waiter_status` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`pk_id_waiterstatus`),
-  UNIQUE INDEX `pk_idWaiterStatus_UNIQUE` (`pk_id_waiterstatus` ASC))
+  PRIMARY KEY (`pk_id_waiter_status`),
+  UNIQUE INDEX `pk_id_waiter_status_UNIQUE` (`pk_id_waiter_status` ASC))
 ENGINE = InnoDB;
 
 

@@ -37,7 +37,7 @@ public class User implements Serializable {
 	private String username;
 
 	//bi-directional one-to-one association to Customer
-	@OneToOne(mappedBy="user")
+	@OneToOne(mappedBy="user", optional = true)
 	private Customer customer;
 
 	public User() {
@@ -83,4 +83,8 @@ public class User implements Serializable {
 		this.customer = customer;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("User: [pk_id_user=%d]", pkIdUser);
+	}
 }
