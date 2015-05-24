@@ -5,9 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-/**
- * persistent class for the database table reservation
- */
+
 @Entity
 @NamedQuery(name = "Reservation.findAll", query = "SELECT r FROM Reservation r")
 public class Reservation implements Serializable {
@@ -32,6 +30,24 @@ public class Reservation implements Serializable {
 
 	@Column(name="fk_id_reservation_status", nullable=false)
 	private int fkIdReservationStatus;
+	private Reservationstatus reservationstatus;
+
+	@Override
+	public String toString() {
+		return "Reservation{" +
+				"pkIdReservation=" + pkIdReservation +
+				", timeFrom=" + timeFrom +
+				", timeTo=" + timeTo +
+				", fkIdRestaurantTable=" + fkIdRestaurantTable +
+				", fkIdUser=" + fkIdUser +
+				", fkIdReservationStatus=" + fkIdReservationStatus +
+				", reservationstatus=" + reservationstatus +
+				'}';
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
 
 	public int getPkIdReservation() {
 		return pkIdReservation;
@@ -39,30 +55,6 @@ public class Reservation implements Serializable {
 
 	public void setPkIdReservation(int pkIdReservation) {
 		this.pkIdReservation = pkIdReservation;
-	}
-
-	public int getFkIdRestaurantTable() {
-		return fkIdRestaurantTable;
-	}
-
-	public void setFkIdRestaurantTable(int fkIdRestaurantTable) {
-		this.fkIdRestaurantTable = fkIdRestaurantTable;
-	}
-
-	public int getFkIdUser() {
-		return fkIdUser;
-	}
-
-	public void setFkIdUser(int fkIdUser) {
-		this.fkIdUser = fkIdUser;
-	}
-
-	public int getFkIdReservationstatus() {
-		return fkIdReservationStatus;
-	}
-
-	public void setFkIdReservationStatus(int fkIdReservationStatus) {
-		this.fkIdReservationStatus = fkIdReservationStatus;
 	}
 
 	public Timestamp getTimeFrom() {
@@ -81,11 +73,35 @@ public class Reservation implements Serializable {
 		this.timeTo = timeTo;
 	}
 
-	@Override
-	public String toString() {
-		return "Reservation{" +
-				"pkIdReservation=" + pkIdReservation +
-				"fkIdRestaurantTable=" + fkIdRestaurantTable +
-				'}';
+	public int getFkIdRestaurantTable() {
+		return fkIdRestaurantTable;
+	}
+
+	public void setFkIdRestaurantTable(int fkIdRestaurantTable) {
+		this.fkIdRestaurantTable = fkIdRestaurantTable;
+	}
+
+	public int getFkIdUser() {
+		return fkIdUser;
+	}
+
+	public void setFkIdUser(int fkIdUser) {
+		this.fkIdUser = fkIdUser;
+	}
+
+	public int getFkIdReservationStatus() {
+		return fkIdReservationStatus;
+	}
+
+	public void setFkIdReservationStatus(int fkIdReservationStatus) {
+		this.fkIdReservationStatus = fkIdReservationStatus;
+	}
+
+	public Reservationstatus getReservationstatus() {
+		return reservationstatus;
+	}
+
+	public void setReservationstatus(Reservationstatus reservationstatus) {
+		this.reservationstatus = reservationstatus;
 	}
 }
