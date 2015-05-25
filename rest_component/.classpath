@@ -32,41 +32,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/aleks/.m2/repository/org/springframework/security/spring-security-core/3.2.5.RELEASE/spring-security-core-3.2.5.RELEASE.jar" sourcepath="/home/aleks/.m2/repository/org/springframework/security/spring-security-core/3.2.5.RELEASE/spring-security-core-3.2.5.RELEASE-sources.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.springframework.security"/>
-			<attribute name="maven.artifactId" value="spring-security-core"/>
-			<attribute name="maven.version" value="3.2.5.RELEASE"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/aleks/.m2/repository/org/springframework/security/spring-security-web/3.2.5.RELEASE/spring-security-web-3.2.5.RELEASE.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.springframework.security"/>
-			<attribute name="maven.artifactId" value="spring-security-web"/>
-			<attribute name="maven.version" value="3.2.5.RELEASE"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/aleks/.m2/repository/org/springframework/spring-web/4.1.6.RELEASE/spring-web-4.1.6.RELEASE.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.springframework"/>
-			<attribute name="maven.artifactId" value="spring-web"/>
-			<attribute name="maven.version" value="4.1.6.RELEASE"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/aleks/.m2/repository/org/apache/camel/camel-core/2.15.2/camel-core-2.15.2.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="org.apache.camel"/>
-			<attribute name="maven.artifactId" value="camel-core"/>
-			<attribute name="maven.version" value="2.15.2"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

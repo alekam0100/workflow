@@ -28,6 +28,7 @@ public class MyApplicationConfig {
                 restConfiguration().component("restlet").host("localhost").port(8080).bindingMode(RestBindingMode.auto);
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
                 rest().post("/login").route().to("bean:loginController?method=login(*)");
+                
 
                 rest().post("/reservation").consumes("application/json").type(Reservation.class)
                         .route().process(authProcessor) // auth & validate
@@ -39,6 +40,7 @@ public class MyApplicationConfig {
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
 
+                rest().post("/register").route().to("bean:CustomerController?method=addCustomer(*)");
 
                 rest().post("/facebook").route().process(authProcessor).to("bean:checkinController?method=facebook(*)")
                         .to("facebook://postStatusMessage?message=I%20just%20checked%20into%20restaurant");
