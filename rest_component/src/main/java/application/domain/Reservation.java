@@ -30,7 +30,7 @@ public class Reservation implements Serializable {
 
 	@Column(name="fk_id_reservation_status", nullable=false)
 	private int fkIdReservationStatus;
-	private Reservationstatus reservationstatus;
+	//private Reservationstatus reservationstatus;
 
 	@Override
 	public String toString() {
@@ -41,7 +41,7 @@ public class Reservation implements Serializable {
 				", fkIdRestaurantTable=" + fkIdRestaurantTable +
 				", fkIdUser=" + fkIdUser +
 				", fkIdReservationStatus=" + fkIdReservationStatus +
-				", reservationstatus=" + reservationstatus +
+			//	", reservationstatus=" + reservationstatus +
 				'}';
 	}
 
@@ -96,12 +96,12 @@ public class Reservation implements Serializable {
 	public void setFkIdReservationStatus(int fkIdReservationStatus) {
 		this.fkIdReservationStatus = fkIdReservationStatus;
 	}
-
-	public Reservationstatus getReservationstatus() {
-		return reservationstatus;
-	}
-
-	public void setReservationstatus(Reservationstatus reservationstatus) {
-		this.reservationstatus = reservationstatus;
-	}
+//
+//	public Reservationstatus getReservationstatus() {
+//		return reservationstatus;
+//	}
+//
+//	public void setReservationstatus(Reservationstatus reservationstatus) {
+//		this.reservationstatus = reservationstatus;
+//	}
 }

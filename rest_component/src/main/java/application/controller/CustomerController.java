@@ -18,9 +18,12 @@ public class CustomerController {
 	private CustomerService customerService;
 	
 	public Customer addCustomer(@RequestBody Customer c) throws MissingServletRequestParameterException {
-		Customer cu = customerService.addNewCustomer(c);
+		System.out.println("CustomerController.addCustomer");
+		System.out.println("c = [" + c + "]");
+
+		//Customer cu = customerService.addNewCustomer(c);
 		
-		return cu;
+		return c;
 		
 	}
 	

@@ -1,5 +1,6 @@
 package application;
 
+import application.domain.Customer;
 import application.domain.Reservation;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -40,7 +41,7 @@ public class MyApplicationConfig {
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
 
-                rest().post("/register").route().to("bean:CustomerController?method=addCustomer(*)");
+                rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 rest().post("/facebook").route().process(authProcessor).to("bean:checkinController?method=facebook(*)")
                         .to("facebook://postStatusMessage?message=I%20just%20checked%20into%20restaurant");

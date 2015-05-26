@@ -33,8 +33,10 @@ public class ReservationService {
 
 	public List<Reservation> getAllReservations(boolean onlyValid, boolean onlyCurrentAndFuture) {
 		if (onlyValid) {
-			List<Reservation> toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
-			if (onlyCurrentAndFuture) {
+
+		//	List<Reservation> toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
+			List<Reservation> toReturn = reservationRepository.findAll();
+ 			if (onlyCurrentAndFuture) {
 				return filterCurrentAndFutureReservations(toReturn);
 			}
 			return toReturn;
