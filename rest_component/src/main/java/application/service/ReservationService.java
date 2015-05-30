@@ -35,7 +35,7 @@ public class ReservationService {
 		if (onlyValid) {
 
 		//	List<Reservation> toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
-			List<Reservation> toReturn = reservationRepository.findAll();
+			List<Reservation> toReturn = reservationRepository.findAll(); //todo
  			if (onlyCurrentAndFuture) {
 				return filterCurrentAndFutureReservations(toReturn);
 			}
@@ -51,7 +51,7 @@ public class ReservationService {
 
 	@Autowired
 	private TimeService timeService;
-	
+
 	private List<Reservation> filterCurrentAndFutureReservations(List<Reservation> unfiltered) {
 		List<Reservation> filtered = new ArrayList<Reservation>();
 		for(Reservation r: unfiltered) {
@@ -61,19 +61,13 @@ public class ReservationService {
 		}
 		return filtered;
 	}
-	public List<Reservation> getMyReservations(boolean camelHttpQuery) {
-
-		List<Reservation> reservations = new ArrayList<>();
-		Reservation reservation = new Reservation();
-		reservation.setPkIdReservation(-42);
-		reservations.add(reservation);
+	public List<Reservation> getMyReservations(boolean bool) {
+		List<Reservation> reservations = getAllReservations(false,false);//todo
 		return reservations;
 	}
 
-
 	public Reservation createReservation(Reservation reservation) {
-//		return reservationRepository.saveAndFlush(reservation);
-		return reservation;
+		return reservationRepository.saveAndFlush(reservation);
 	}
 
 	public boolean checkIn(int tableId, String token, Timestamp timestamp) throws Exception {

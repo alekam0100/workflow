@@ -2,6 +2,7 @@ package application.domain;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -9,45 +10,31 @@ import java.sql.Timestamp;
 @Entity
 @NamedQuery(name = "Reservation.findAll", query = "SELECT r FROM Reservation r")
 public class Reservation implements Serializable {
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "pk_id_reservation", unique = true, nullable = false)
 	private int pkIdReservation;
-
+	@NotNull
 	@Column(name = "time_from", nullable = false)
 	private Timestamp timeFrom;
-
+	@NotNull
 	@Column(name = "time_to", nullable = false)
 	private Timestamp timeTo;
 
-	@Column(name="fk_id_restaurant_table", nullable=false)
-	private int fkIdRestaurantTable;
+	@NotNull
+	@Column(name = "persons")
+	private Integer persons;
 
-	@Column(name="fk_id_user", nullable=false)
-	private int fkIdUser;
-
-	@Column(name="fk_id_reservation_status", nullable=false)
-	private int fkIdReservationStatus;
-	//private Reservationstatus reservationstatus;
-
-	@Override
-	public String toString() {
-		return "Reservation{" +
-				"pkIdReservation=" + pkIdReservation +
-				", timeFrom=" + timeFrom +
-				", timeTo=" + timeTo +
-				", fkIdRestaurantTable=" + fkIdRestaurantTable +
-				", fkIdUser=" + fkIdUser +
-				", fkIdReservationStatus=" + fkIdReservationStatus +
-			//	", reservationstatus=" + reservationstatus +
-				'}';
-	}
-
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
-	}
+	@NotNull
+	@Column(name = "fk_id_restaurant_table", nullable = false)
+	private Integer fkIdRestaurantTable;
+	@NotNull
+	@Column(name = "fk_id_user", nullable = false)
+	private Integer fkIdUser;
+	@NotNull
+	@Column(name = "fk_id_reservation_status", nullable = false)
+	private Integer fkIdReservationStatus;
 
 	public int getPkIdReservation() {
 		return pkIdReservation;
@@ -73,35 +60,35 @@ public class Reservation implements Serializable {
 		this.timeTo = timeTo;
 	}
 
-	public int getFkIdRestaurantTable() {
+	public Integer getPersons() {
+		return persons;
+	}
+
+	public void setPersons(Integer persons) {
+		this.persons = persons;
+	}
+
+	public Integer getFkIdRestaurantTable() {
 		return fkIdRestaurantTable;
 	}
 
-	public void setFkIdRestaurantTable(int fkIdRestaurantTable) {
+	public void setFkIdRestaurantTable(Integer fkIdRestaurantTable) {
 		this.fkIdRestaurantTable = fkIdRestaurantTable;
 	}
 
-	public int getFkIdUser() {
+	public Integer getFkIdUser() {
 		return fkIdUser;
 	}
 
-	public void setFkIdUser(int fkIdUser) {
+	public void setFkIdUser(Integer fkIdUser) {
 		this.fkIdUser = fkIdUser;
 	}
 
-	public int getFkIdReservationStatus() {
+	public Integer getFkIdReservationStatus() {
 		return fkIdReservationStatus;
 	}
 
-	public void setFkIdReservationStatus(int fkIdReservationStatus) {
+	public void setFkIdReservationStatus(Integer fkIdReservationStatus) {
 		this.fkIdReservationStatus = fkIdReservationStatus;
 	}
-//
-//	public Reservationstatus getReservationstatus() {
-//		return reservationstatus;
-//	}
-//
-//	public void setReservationstatus(Reservationstatus reservationstatus) {
-//		this.reservationstatus = reservationstatus;
-//	}
 }

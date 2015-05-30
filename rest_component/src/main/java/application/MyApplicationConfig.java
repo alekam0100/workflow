@@ -32,7 +32,7 @@ public class MyApplicationConfig {
                 
 
                 rest().post("/reservation").consumes("application/json").type(Reservation.class)
-                        .route().process(authProcessor) // auth & validate
+                        .route().process(authProcessor).to("bean-validator:res") // auth & validate
                         .marshal().json(JsonLibrary.Jackson).wireTap("file://reservations").end()
                         .unmarshal().json(JsonLibrary.Jackson, Reservation.class).to("bean:reservationController?method=createReservation(*)")
                 ;
@@ -60,6 +60,10 @@ public class MyApplicationConfig {
         };
     }
 
+//    @Bean
+//    public HibernateValidationProviderResolver myValidationProviderResolver(){
+//        return new org.apache.camel.component.bean.validator.HibernateValidationProviderResolver();
+//    }
     @Bean
     public FacebookConfiguration configuration() {
         FacebookConfiguration conf = new FacebookConfiguration();

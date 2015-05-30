@@ -26,20 +26,19 @@ public class ReservationController {
 	}
 
 	public List<Reservation> getMyReservations(Exchange exchange) {
+		System.out.println("ReservationController.getMyReservations");
 		String params = "";
 		try {
 			params = exchange.getIn().getHeader("CamelHttpQuery").toString();
 		} catch (Exception e) {
 
 		}
-
 		return reservationService.getMyReservations(params.contains("onlyCurrentAndFuture=true"));
 	}
 
 	public Reservation getReservation(String id, Exchange exchange) {
 		return reservationService.getReservation(Integer.parseInt(id));
 	}
-
 
 	public Reservation createReservation(Exchange exchange) {
 		System.out.println("ReservationController.createReservation");
