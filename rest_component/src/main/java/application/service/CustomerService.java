@@ -7,6 +7,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import application.dataaccess.CustomerRepository;
 import application.dataaccess.UserRepository;
 import application.domain.Customer;
+import application.domain.Reservation;
 import application.domain.User;
 
 @Service
@@ -33,6 +34,10 @@ public class CustomerService {
 		
 	}
 	
+	public Customer addCustomer(Customer c) {
+		return cRepo.saveAndFlush(c);
+	}
+	
 	private void removeUserCredentials(Customer c) {
 		c.getUser().setUsername("");
 		c.getUser().setPassword("");
@@ -42,6 +47,12 @@ public class CustomerService {
 		Customer result = cRepo.findOne(tokenManager.getCurrentUser().getPkIdUser());
 		removeUserCredentials(result);
 		return result;
+	}
+	
+	public Customer getCustomer(int userId){
+		Customer c = cRepo.findOne(userId);
+		removeUserCredentials(c);
+		return c;
 	}
 
 }
