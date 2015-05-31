@@ -37,5 +37,11 @@ public class CustomerService {
 		c.getUser().setUsername("");
 		c.getUser().setPassword("");
 	}
+    
+	public Customer getMyCustomer() {
+		Customer result = cRepo.findOne(tokenManager.getCurrentUser().getPkIdUser());
+		removeUserCredentials(result);
+		return result;
+	}
 
 }

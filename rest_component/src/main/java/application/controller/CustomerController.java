@@ -21,11 +21,13 @@ public class CustomerController {
 		System.out.println("CustomerController.addCustomer");
 		System.out.println("c = [" + c + "]");
 
-		//Customer cu = customerService.addNewCustomer(c);
 		
 		return c;
 		
 	}
 	
+	public Customer getMyCustomer() {
+		return customerService.getMyCustomer();
+	}
 	
 }
