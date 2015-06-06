@@ -56,6 +56,8 @@ public class MyApplicationConfig {
 
                 rest().post("/checkin").route().process(authProcessor).to("bean:checkinController?method=checkin(*)");
                 rest().get("/food").route().process(authProcessor).to("bean:foodController?method=food(*)");
+                
+                rest().post("/payment").route().process(authProcessor).to("bean:PaymentController?method=initPayment(*)"); //TODO specify which method
             }
         };
     }
