@@ -1,10 +1,12 @@
 package application.domain;
 
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 @Entity
-public class Checkin {
+public class Checkin implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
