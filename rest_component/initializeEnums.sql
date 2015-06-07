@@ -9,28 +9,28 @@ INSERT INTO `ordermgmt`.`orderstatus` VALUES (1,'created'), (2,'in progress'), (
 DELETE FROM `ordermgmt`.`orderitemstatus`;
 INSERT INTO `ordermgmt`.`orderitemstatus` VALUES (1,'created'), (2,'in progress'),(3,'ready for delivery'), (4,'done'), (5,'cancelled');
 
-DELETE FROM `ordermgmt`.`food_type`;
-INSERT INTO `ordermgmt`.`food_type` VALUES (1,0.2,'beverage'), (2,0.1,'dish');
+DELETE FROM `ordermgmt`.`foodtype`;
+INSERT INTO `ordermgmt`.`foodtype` VALUES (1,0.2,'beverage'), (2,0.1,'dish');
 
 DELETE FROM `ordermgmt`.`table_status`;
 INSERT INTO `ordermgmt`.`table_status` VALUES (1,'free'),(2,'reserved'),(3,'occupied');
 
-DELETE FROM `ordermgmt`.`size_unit`;
-INSERT INTO `ordermgmt`.`size_unit` VALUES (1,'liter'),(2,'centiliter'),(3,'milliliter'),(4,'gram'),(5,'kilogram');
+DELETE FROM `ordermgmt`.`sizeunit`;
+INSERT INTO `ordermgmt`.`sizeunit` VALUES (1,'liter'),(2,'centiliter'),(3,'milliliter'),(4,'gram'),(5,'kilogram');
 
-DELETE FROM `ordermgmt`.`reservation_status`;
-INSERT INTO `ordermgmt`.`reservation_status` VALUES (1,'valid'),(2,'cancelled');
+DELETE FROM `ordermgmt`.`reservationstatus`;
+INSERT INTO `ordermgmt`.`reservationstatus` VALUES (1,'valid'),(2,'cancelled');
 
-DELETE FROM `ordermgmt`.`waiter_status`;
-INSERT INTO `ordermgmt`.`waiter_status` VALUES (1,'none'),(2,'waiter'),(3,'bill');
+DELETE FROM `ordermgmt`.`waiterstatus`;
+INSERT INTO `ordermgmt`.`waiterstatus` VALUES (1,'none'),(2,'waiter'),(3,'bill');
 
 -- Insert testdata --
 DELETE FROM `ordermgmt`.`user`;
-INSERT INTO `ordermgmt`.`user` VALUES (1,'user','x',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (2,'kitchen','pwd',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (3,'manager','pwd',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (4,'waiter','pwd',NULL);
-INSERT INTO `ordermgmt`.`user` VALUES (5,'bar','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` (pk_id_user, username, password, token) VALUES (1,'user','x',NULL);
+INSERT INTO `ordermgmt`.`user` (pk_id_user, username, password, token) VALUES (2,'kitchen','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` (pk_id_user, username, password, token) VALUES (3,'manager','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` (pk_id_user, username, password, token) VALUES (4,'waiter','pwd',NULL);
+INSERT INTO `ordermgmt`.`user` (pk_id_user, username, password, token) VALUES (5,'bar','pwd',NULL);
 
 
 DELETE FROM `ordermgmt`.`customer`;
@@ -46,7 +46,7 @@ INSERT INTO `ordermgmt`.`restaurant_table` (`pk_id_restaurant_table`, `max_perso
 INSERT INTO `ordermgmt`.`restaurant_table` (`pk_id_restaurant_table`, `max_person`, `fk_id_table_status`, `fk_id_waiter_status`) VALUES (NULL, '2', '1', '1');
 
 delete from `ordermgmt`.`reservation`;
-INSERT INTO `ordermgmt`.`reservation` (`pk_id_reservation`, `time_from`, `time_to`, `persons`, `reservation_col`, `fk_id_user`, `fk_id_restaurant_table`, `fk_id_reservation_status`)
-VALUES (NULL, '2015-05-10 16:00:00', '2015-05-10 18:00:00', 4, "", 1, 1, 1);
+INSERT INTO `ordermgmt`.`reservation` (`pk_id_reservation`, `time_from`, `time_to`, `persons`, `fk_id_user`, `fk_id_restaurant_table`, `fk_id_reservation_status`)
+VALUES (NULL, '2015-05-10 16:00:00', '2015-05-10 18:00:00', 4, 1, 1, 1);
 
 SET FOREIGN_KEY_CHECKS=1;

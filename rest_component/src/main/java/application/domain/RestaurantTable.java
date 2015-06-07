@@ -2,7 +2,11 @@ package application.domain;
 
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * persistent class for the database table reservation
@@ -19,16 +23,22 @@ public class RestaurantTable implements Serializable {
 
 	@Column(name = "max_person", nullable = false)
 	private int maxPerson;
-
-	@Column(name="fk_id_waiter_status", nullable=false)
-	private int fkIdWaiterStatus;
-
-	@Column(name="fk_id_table_status", nullable=false)
-	private int fkIdTableStatus;
-
-	@OneToOne
-	@JoinColumn(name="fk_id_table_status", nullable=false, insertable=false, updatable=false)
+	
+	//bi-directional many-to-one association to Reservation
+	@OneToMany(mappedBy="table")
+	@JsonBackReference(value="reservation-table")
+	private List<Reservation> reservations;
+	
+	//bi-directional many-to-one association to Tablestatus
+	@ManyToOne
+	@JoinColumn(name="fk_id_table_status")
+	//@JsonManagedReference(value="table-tablestatus")
 	private TableStatus tableStatus;
+	
+	//bi-directional many-to-one association to Waiterstatus
+	@ManyToOne
+	@JoinColumn(name="fk_id_waiter_status")
+	private Waiterstatus waiterstatus;
 
 	public int getPkIdRestaurantTable() {
 		return pkIdRestaurantTable;
@@ -45,14 +55,45 @@ public class RestaurantTable implements Serializable {
 	public void setMaxPerson(int maxPerson) {
 		this.maxPerson = maxPerson;
 	}
-
-	public int getFkIdWaiterStatus() {
-		return fkIdWaiterStatus;
+	
+	public List<Reservation> getReservations() {
+		return this.reservations;
 	}
 
-	public void setFkIdWaiterStatus(int fkIdWaiterStatus) {
-		this.fkIdWaiterStatus = fkIdWaiterStatus;
+	public void setReservations(List<Reservation> reservations) {
+		this.reservations = reservations;
 	}
+
+	public Reservation addReservation(Reservation reservation) {
+		getReservations().add(reservation);
+		reservation.setTable(this);
+
+		return reservation;
+	}
+
+	public Reservation removeReservation(Reservation reservation) {
+		getReservations().remove(reservation);
+		reservation.setTable(null);
+
+		return reservation;
+	}
+
+	public TableStatus getTablestatus() {
+		return this.tableStatus;
+	}
+
+	public void setTablestatus(TableStatus tablestatus) {
+		this.tableStatus = tablestatus;
+	}
+
+	public Waiterstatus getWaiterstatus() {
+		return this.waiterstatus;
+	}
+
+	public void setWaiterstatus(Waiterstatus waiterstatus) {
+		this.waiterstatus = waiterstatus;
+	}
+	
 
 	public TableStatus getTableStatus() {
 		return tableStatus;
@@ -62,21 +103,13 @@ public class RestaurantTable implements Serializable {
 		this.tableStatus = tableStatus;
 	}
 
-	public int getFkIdTableStatus() {
-		return fkIdTableStatus;
-	}
-
-	public void setFkIdTableStatus(int fkIdTableStatus) {
-		this.fkIdTableStatus = fkIdTableStatus;
-	}
-
 	@Override
 	public String toString() {
 		return "Table{" +
 				"pkIdRestaurantTable=" + pkIdRestaurantTable +
 				"maxPerson=" + maxPerson +
 				"tableStatus=" + tableStatus+
-				"fkIdWaiterStatus=" + fkIdWaiterStatus +
+				//"fkIdWaiterStatus=" + fkIdWaiterStatus +
 				'}';
 	}
 }

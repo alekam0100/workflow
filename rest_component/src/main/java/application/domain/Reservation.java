@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -56,7 +57,7 @@ public class Reservation implements Serializable {
 	//bi-directional many-to-one association to Table
 	@ManyToOne
 	@JoinColumn(name="fk_id_restaurant_table")
-	//@JsonManagedReference(value="reservation-table")
+	@JsonManagedReference(value="reservation-table")
 	private RestaurantTable table;
 
 	public Reservation() {
