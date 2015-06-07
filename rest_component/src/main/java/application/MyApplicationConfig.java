@@ -75,14 +75,15 @@ public class MyApplicationConfig {
                 onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
         		.marshal().json(JsonLibrary.Jackson);
                 
-                rest().post("/payment").route().process(authProcessor).process(headerProcessor).to("bean:paymentController?method=initPayment(*)")
+                rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
+                .to("bean:paymentController?method=initPayment(${header.rid},*)")
                 .choice()
                 	.when(header("email").isEqualTo("1"))
                 		.to("bean:paymentController?method=sendEmailRegistered(*)")
                 	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
                 		.to("bean:paymentController?method=sendEmail(*)").endChoice()
-                	.otherwise()
-                		.to("bean:paymentController?method=test(*)");
+                .to("bean:paymentController?method=createBill(*)");
+                	
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
             }
