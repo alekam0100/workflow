@@ -1,7 +1,5 @@
 package application.controller;
 
-import application.domain.CheckinNotPossible;
-import application.domain.DataValidationFailed;
 import application.service.CheckinService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Header;
@@ -16,11 +14,10 @@ public class CheckinController {
     @Autowired
     private CheckinService checkinService;
 
-    public void checkin(String id, @Header("org.restlet.http.headers") Series<?> headers, Exchange exchange) throws CheckinNotPossible,
-            DataValidationFailed{
+    public void checkin(String id, @Header("org.restlet.http.headers") Series<?> headers, Exchange exchange) {
         if (id == null || id.isEmpty() || headers.getFirstValue("X-timestamp") == null) {
-            exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "404");
-            exchange.getOut().setBody("No table id or timestamp");
+            exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "400");
+            exchange.getOut().setBody("No table id or timestamp found");
             return;
         }
 
@@ -28,9 +25,13 @@ public class CheckinController {
         Integer tableId = Integer.parseInt(id);
         Timestamp timestamp = Timestamp.valueOf(headers.getFirstValue("X-timestamp"));
 
-        if (!checkinService.checkIn(tableId, timestamp)) {
-                throw new CheckinNotPossible();
-            }
+        try {
+            checkinService.checkIn(tableId, timestamp);
+        } catch (Exception e) {
+            exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "400");
+            exchange.getOut().setBody(e.getMessage());
+            return;
+        }
 
         exchange.getOut().setHeader("social", headers.getFirstValue("Social"));
         exchange.getOut().setHeader("message", headers.getFirstValue("Message"));
