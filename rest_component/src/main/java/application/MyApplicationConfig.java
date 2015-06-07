@@ -63,7 +63,8 @@ public class MyApplicationConfig {
                 
                 rest().post("/payment").route().process(authProcessor).to("bean-validator:res").to("bean:PaymentController?method=initPayment(*)").choice()
                 .when(header("email").isEqualTo(1)).to("bean:PaymentController?method=sendEmailRegistered(*)")
-                .when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"));
+                .when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
+                .to("bean:PaymentController?method=sendEmail(*)");
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
             }
