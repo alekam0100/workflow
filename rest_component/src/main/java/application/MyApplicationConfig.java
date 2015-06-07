@@ -2,11 +2,14 @@ package application;
 
 import application.domain.Customer;
 import application.domain.Reservation;
+
 import org.apache.camel.CamelContext;
+import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.facebook.config.FacebookConfiguration;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
+import org.apache.camel.processor.validation.PredicateValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +22,8 @@ public class MyApplicationConfig {
 
     @Autowired
     private AuthenticationProcessor authProcessor;
+    @Autowired
+    private HeaderProcessor headerProcessor;
 
 
     @Bean
@@ -63,14 +68,21 @@ public class MyApplicationConfig {
                 
                 /*
                  * Payment route
-                 * used patterns: content-based filter, validate
+                 * used patterns: content-based filter, validate, message translator pattern
+                 * .to("bean:paymentController?method=initPayment(*)")
                  */
-                rest().post("/payment").route().process(authProcessor).to("bean-validator:res").to("bean:PaymentController?method=initPayment(*)")
+                // exception handling for email validataion
+                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
+        		.marshal().json(JsonLibrary.Jackson);
+                
+                rest().post("/payment").route().process(authProcessor).process(headerProcessor).to("bean:paymentController?method=initPayment(*)")
                 .choice()
-                	.when(header("email").isEqualTo(1))
-                		.to("bean:PaymentController?method=sendEmailRegistered(*)")
+                	.when(header("email").isEqualTo("1"))
+                		.to("bean:paymentController?method=sendEmailRegistered(*)")
                 	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
-                		.to("bean:PaymentController?method=sendEmail(*)");
+                		.to("bean:paymentController?method=sendEmail(*)").endChoice()
+                	.otherwise()
+                		.to("bean:paymentController?method=test(*)");
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
             }
