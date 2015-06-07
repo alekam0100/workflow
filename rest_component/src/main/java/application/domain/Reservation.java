@@ -49,15 +49,15 @@ public class Reservation implements Serializable {
 
 	//bi-directional many-to-one association to Reservationstatus
 	@ManyToOne
-	@JoinColumn(name="fk_id_reservationstatus")
+	@JoinColumn(name="fk_id_reservation_status")
 	@JsonBackReference(value="reservation-reservationstatus")
 	private Reservationstatus reservationstatus;
 
 	//bi-directional many-to-one association to Table
 	@ManyToOne
-	@JoinColumn(name="fk_id_table")
+	@JoinColumn(name="fk_id_restaurant_table")
 	//@JsonManagedReference(value="reservation-table")
-	private Table table;
+	private RestaurantTable table;
 
 	public Reservation() {
 	}
@@ -132,11 +132,11 @@ public class Reservation implements Serializable {
 		this.reservationstatus = reservationstatus;
 	}
 
-	public Table getTable() {
+	public RestaurantTable getTable() {
 		return this.table;
 	}
 
-	public void setTable(Table table) {
+	public void setTable(RestaurantTable table) {
 		this.table = table;
 	}
 

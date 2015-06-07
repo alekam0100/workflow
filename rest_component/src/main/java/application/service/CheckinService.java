@@ -45,7 +45,7 @@ public class CheckinService {
         }
 
         Timestamp halfHourLater = new Timestamp(timestamp.getTime() + 30 * 60 * 1000); // plus 30 mins * 60 sec * 1000 millis
-        Reservation reservation = reservationRepository.findByTableAndTimeFromLessThanAndTimeToGreaterThan
+        /* Reservation reservation = reservationRepository.findByTableAndTimeFromLessThanAndTimeToGreaterThan
                 (tableId, halfHourLater, halfHourLater);
         if (reservation != null && reservation.getCustomer() != user.getCustomer())
             // there is a reservation not made by this user that start in less than 30mins, or ends in more than 30mins
@@ -67,12 +67,12 @@ public class CheckinService {
             newRes.setFkIdReservationStatus(1);
 
             reservationRepository.saveAndFlush(newRes);*/
-        }
+       // }
 
 
         // change table status to occupied
-        table.setFkIdTableStatus(tableStatusRepository.findByStatus("occupied").getPkIdTablestatus());
-        tableRepository.saveAndFlush(table);
+        /*table.setFkIdTableStatus(tableStatusRepository.findByStatus("occupied").getPkIdTablestatus());
+        tableRepository.saveAndFlush(table);*/
 
         return true;
     }
