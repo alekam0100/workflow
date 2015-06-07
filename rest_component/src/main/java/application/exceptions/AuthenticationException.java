@@ -1,4 +1,4 @@
-package application.domain;
+package application.exceptions;
 
 public class AuthenticationException extends Exception {
 
