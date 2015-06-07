@@ -18,7 +18,7 @@ public class Customer implements Serializable {
 
 	@Id
 	@Column(name="fk_id_user", unique=true, nullable=false)
-	private int fkIdUser;
+	private Integer fkIdUser;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="birth_date")

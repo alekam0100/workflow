@@ -12,9 +12,9 @@ public class OrderFilter {
 	
 	public boolean doesReservationBelongToUser(Exchange exchange) {
 		Order order = exchange.getIn().getBody(Order.class);
-		if(!order.getReservation().getFkIdUser().equals(tokenManager.getCurrentUser().getPkIdUser())) {
-			return false;
-		}
+		//if(!order.getReservation().getCustomer().getFkIdUser().equals(tokenManager.getCurrentUser().getPkIdUser())) {
+		//	return false;
+		//}
 		return true;
 	}
 }

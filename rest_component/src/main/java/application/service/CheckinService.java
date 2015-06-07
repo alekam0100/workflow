@@ -47,7 +47,7 @@ public class CheckinService {
         Timestamp halfHourLater = new Timestamp(timestamp.getTime() + 30 * 60 * 1000); // plus 30 mins * 60 sec * 1000 millis
         Reservation reservation = reservationRepository.findByTableAndTimeFromLessThanAndTimeToGreaterThan
                 (tableId, halfHourLater, halfHourLater);
-        if (reservation != null && reservation.getFkIdUser() != user.getPkIdUser())
+        if (reservation != null && reservation.getCustomer() != user.getCustomer())
             // there is a reservation not made by this user that start in less than 30mins, or ends in more than 30mins
             throw new Exception("Not possible to checkin at this table");
 
@@ -57,6 +57,7 @@ public class CheckinService {
 
         // create a new reservation
         if (reservation == null){
+           /* Vanja pls fix this lines.
             Reservation newRes = new Reservation();
             newRes.setFkIdUser(user.getPkIdUser());
             newRes.setTimeFrom(timestamp);
@@ -65,7 +66,7 @@ public class CheckinService {
             newRes.setPersons(1);
             newRes.setFkIdReservationStatus(1);
 
-            reservationRepository.saveAndFlush(newRes);
+            reservationRepository.saveAndFlush(newRes);*/
         }
 
 
