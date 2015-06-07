@@ -1,13 +1,13 @@
 SET FOREIGN_KEY_CHECKS=0;
 -- Insert ENUMS: --
-DELETE FROM `ordermgmt`.`bill_status`;
-INSERT INTO `ordermgmt`.`bill_status` VALUES (1,'open'), (2,'closed');
+DELETE FROM `ordermgmt`.`billstatus`;
+INSERT INTO `ordermgmt`.`billstatus` VALUES (1,'open'), (2,'closed');
 
-DELETE FROM `ordermgmt`.`order_status`;
-INSERT INTO `ordermgmt`.`order_status` VALUES (1,'created'), (2,'in progress'), (3,'done'), (4,'cancelled');
+DELETE FROM `ordermgmt`.`orderstatus`;
+INSERT INTO `ordermgmt`.`orderstatus` VALUES (1,'created'), (2,'in progress'), (3,'done'), (4,'cancelled');
 
-DELETE FROM `ordermgmt`.`order_item_status`;
-INSERT INTO `ordermgmt`.`order_item_status` VALUES (1,'created'), (2,'in progress'),(3,'ready for delivery'), (4,'done'), (5,'cancelled');
+DELETE FROM `ordermgmt`.`orderitemstatus`;
+INSERT INTO `ordermgmt`.`orderitemstatus` VALUES (1,'created'), (2,'in progress'),(3,'ready for delivery'), (4,'done'), (5,'cancelled');
 
 DELETE FROM `ordermgmt`.`food_type`;
 INSERT INTO `ordermgmt`.`food_type` VALUES (1,0.2,'beverage'), (2,0.1,'dish');

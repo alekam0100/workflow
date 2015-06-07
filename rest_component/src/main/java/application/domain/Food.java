@@ -1,118 +1,147 @@
 package application.domain;
 
-
-import javax.persistence.*;
 import java.io.Serializable;
 
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
+
+
 /**
- * persistent class for the database table reservation
+ * The persistent class for the food database table.
+ * 
  */
 @Entity
-@NamedQuery(name = "Food.findAll", query = "SELECT f FROM Food f")
+@NamedQuery(name="Food.findAll", query="SELECT f FROM Food f")
 public class Food implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "pk_id_food", unique = true, nullable = false)
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="pk_id_food", unique=true, nullable=false)
 	private int pkIdFood;
 
-	@Column(name = "net_price", nullable = true)
-	private double netPrice;
+	@Column(nullable=false)
+	private int available;
 
-	@Column(name="available", nullable=true)
-	private boolean available;
-
-	@Column(name="name", nullable=true)
-	private String name;
-
-	@Column(name="description", nullable=true)
+	@Column(length=255)
 	private String description;
 
-	@Column(name="fk_id_food_type", nullable=true)
-	private Integer fk_id_food_type;
+	@Column(length=255)
+	private String name;
 
-	@Column(name="size", nullable=true)
+	@Column(name="net_price")
+	private Double netPrice;
+	
+	@Column
 	private Double size;
 
-	@Column(name="fk_id_size_unit", nullable=true)
-	private Integer fk_id_size_unit;
+	//bi-directional many-to-one association to Foodtype
+	@ManyToOne
+	@JoinColumn(name="fk_id_foodtype")
+	//@JsonBackReference(value="food-foodType")
+	private Foodtype foodtype;
 
+	//bi-directional many-to-one association to Sizeunit
+	@ManyToOne
+	@JoinColumn(name="fk_id_sizeunit")
+	//@JsonManagedReference(value="food-sizeUnit")
+	private Sizeunit sizeunit;
+
+	//bi-directional many-to-one association to Orderitem
+	@OneToMany(mappedBy="food")
+	@JsonIgnore
+	private List<Orderitem> orderitems;
+
+	public Food() {
+	}
 
 	public int getPkIdFood() {
-		return pkIdFood;
+		return this.pkIdFood;
 	}
 
 	public void setPkIdFood(int pkIdFood) {
 		this.pkIdFood = pkIdFood;
 	}
 
-	public double getNetPrice() {
-		return netPrice;
+	public int getAvailable() {
+		return this.available;
 	}
 
-	public void setNetPrice(double netPrice) {
-		this.netPrice = netPrice;
-	}
-
-	public boolean isAvailable() {
-		return available;
-	}
-
-	public void setAvailable(boolean available) {
+	public void setAvailable(int available) {
 		this.available = available;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public int getFk_id_food_type() {
-		return fk_id_food_type;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setFk_id_food_type(int fk_id_food_type) {
-		this.fk_id_food_type = fk_id_food_type;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public double getSize() {
-		return size;
+	public Double getNetPrice() {
+		return this.netPrice;
 	}
 
-	public void setSize(double size) {
+	public void setNetPrice(Double netPrice) {
+		this.netPrice = netPrice;
+	}
+
+	public Double getSize() {
+		return this.size;
+	}
+
+	public void setSize(Double size) {
 		this.size = size;
 	}
 
-	public int getFk_id_size_unit() {
-		return fk_id_size_unit;
+	public Foodtype getFoodtype() {
+		return this.foodtype;
 	}
 
-	public void setFk_id_size_unit(int fk_id_size_unit) {
-		this.fk_id_size_unit = fk_id_size_unit;
+	public void setFoodtype(Foodtype foodtype) {
+		this.foodtype = foodtype;
 	}
 
-	@Override
-	public String toString() {
-		return "Food{" +
-				"pkIdFood=" + pkIdFood +
-				", net_price=" + netPrice +
-				", available=" + available+
-				", description=" + description +
-				", fk_id_food_type=" + fk_id_food_type +
-				", size=" + size +
-				", fk_id_size_unit=" + fk_id_size_unit +
-				"}";
+	public Sizeunit getSizeunit() {
+		return this.sizeunit;
 	}
+
+	public void setSizeunit(Sizeunit sizeunit) {
+		this.sizeunit = sizeunit;
+	}
+
+	public List<Orderitem> getOrderitems() {
+		return this.orderitems;
+	}
+
+	public void setOrderitems(List<Orderitem> orderitems) {
+		this.orderitems = orderitems;
+	}
+
+	public Orderitem addOrderitem(Orderitem orderitem) {
+		getOrderitems().add(orderitem);
+		orderitem.setFood(this);
+
+		return orderitem;
+	}
+
+	public Orderitem removeOrderitem(Orderitem orderitem) {
+		getOrderitems().remove(orderitem);
+		orderitem.setFood(null);
+
+		return orderitem;
+	}
+
 }
