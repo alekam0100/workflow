@@ -37,7 +37,22 @@ public class ReservationController {
 	}
 
 	public Reservation getReservation(String id, Exchange exchange) {
-		return reservationService.getReservation(Integer.parseInt(id));
+
+		try {
+			Integer.parseInt(id);
+		} catch (NumberFormatException e) {
+			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "404");
+			return null;
+		}
+
+		Reservation reservation = reservationService.getReservation(Integer.parseInt(id));
+
+		if(reservation==null){
+			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "404");
+			return null;
+		}
+
+		return reservation;
 	}
 
 	public Reservation createReservation(Exchange exchange) {
