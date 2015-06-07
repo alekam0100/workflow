@@ -1,52 +1,85 @@
 package application.domain;
 
+import java.io.Serializable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.sql.Timestamp;
+import java.util.List;
 
 
+/**
+ * The persistent class for the reservation database table.
+ * 
+ */
 @Entity
-@NamedQuery(name = "Reservation.findAll", query = "SELECT r FROM Reservation r")
+@NamedQuery(name="Reservation.findAll", query="SELECT r FROM Reservation r")
 public class Reservation implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "pk_id_reservation", unique = true, nullable = false)
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="pk_id_reservation", unique=true, nullable=false)
 	private int pkIdReservation;
+
+	private Integer persons;
+	
 	@NotNull
-	@Column(name = "time_from", nullable = false)
+	@Column(name="time_from")
 	private Timestamp timeFrom;
+	
 	@NotNull
-	@Column(name = "time_to", nullable = false)
+	@Column(name="time_to")
 	private Timestamp timeTo;
 
-	@NotNull
-	@Column(name = "persons")
-	private Integer persons;
+	//bi-directional many-to-one association to Order
+	@OneToMany(mappedBy="reservation")
+	@JsonIgnore
+	private List<Order> orders;
 
-	@NotNull
-	@Column(name = "fk_id_restaurant_table", nullable = false)
-	private Integer fkIdRestaurantTable;
-	@NotNull
-	@Column(name = "fk_id_user", nullable = false)
-	private Integer fkIdUser;
-	@NotNull
-	@Column(name = "fk_id_reservation_status", nullable = false)
-	private Integer fkIdReservationStatus;
+	//bi-directional many-to-one association to Customer
+	@ManyToOne
+	@JoinColumn(name="fk_id_user")
+	@JsonBackReference(value="reservation-customer")
+	private Customer customer;
+
+	//bi-directional many-to-one association to Reservationstatus
+	@ManyToOne
+	@JoinColumn(name="fk_id_reservationstatus")
+	@JsonBackReference(value="reservation-reservationstatus")
+	private Reservationstatus reservationstatus;
+
+	//bi-directional many-to-one association to Table
+	@ManyToOne
+	@JoinColumn(name="fk_id_table")
+	//@JsonManagedReference(value="reservation-table")
+	private Table table;
+
+	public Reservation() {
+	}
 
 	public int getPkIdReservation() {
-		return pkIdReservation;
+		return this.pkIdReservation;
 	}
 
 	public void setPkIdReservation(int pkIdReservation) {
 		this.pkIdReservation = pkIdReservation;
 	}
 
+	public Integer getPersons() {
+		return this.persons;
+	}
+
+	public void setPersons(int persons) {
+		this.persons = persons;
+	}
+
 	public Timestamp getTimeFrom() {
-		return timeFrom;
+		return this.timeFrom;
 	}
 
 	public void setTimeFrom(Timestamp timeFrom) {
@@ -54,42 +87,57 @@ public class Reservation implements Serializable {
 	}
 
 	public Timestamp getTimeTo() {
-		return timeTo;
+		return this.timeTo;
 	}
 
 	public void setTimeTo(Timestamp timeTo) {
 		this.timeTo = timeTo;
 	}
 
-	public Integer getPersons() {
-		return persons;
+	public List<Order> getOrders() {
+		return this.orders;
 	}
 
-	public void setPersons(Integer persons) {
-		this.persons = persons;
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
-	public Integer getFkIdRestaurantTable() {
-		return fkIdRestaurantTable;
+	public Order addOrder(Order order) {
+		getOrders().add(order);
+		order.setReservation(this);
+
+		return order;
 	}
 
-	public void setFkIdRestaurantTable(Integer fkIdRestaurantTable) {
-		this.fkIdRestaurantTable = fkIdRestaurantTable;
+	public Order removeOrder(Order order) {
+		getOrders().remove(order);
+		order.setReservation(null);
+
+		return order;
 	}
 
-	public Integer getFkIdUser() {
-		return fkIdUser;
+	public Customer getCustomer() {
+		return this.customer;
 	}
 
-	public void setFkIdUser(Integer fkIdUser) {
-		this.fkIdUser = fkIdUser;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
-	public Integer getFkIdReservationStatus() {
-		return fkIdReservationStatus;
+	public Reservationstatus getReservationstatus() {
+		return this.reservationstatus;
 	}
 
-	public void setFkIdReservationStatus(Integer fkIdReservationStatus) {
-		this.fkIdReservationStatus = fkIdReservationStatus;
+	public void setReservationstatus(Reservationstatus reservationstatus) {
+		this.reservationstatus = reservationstatus;
 	}
+
+	public Table getTable() {
+		return this.table;
+	}
+
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
 }
