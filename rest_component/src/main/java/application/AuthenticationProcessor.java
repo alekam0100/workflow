@@ -9,7 +9,7 @@ import org.restlet.util.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import application.domain.AuthenticationException;
+import application.exceptions.AuthenticationException;
 import application.service.AuthenticationService;
 @Component
 public class AuthenticationProcessor implements Processor{
