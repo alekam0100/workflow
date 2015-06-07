@@ -1,15 +1,12 @@
 package application;
 
-import application.exceptions.CheckinException;
 import javassist.NotFoundException;
-import application.exceptions.AuthenticationException;
 import application.domain.Customer;
+import application.exceptions.*;
 import application.domain.Reservation;
 import application.service.LoginFilter;
-import application.service.OrderFilter;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.facebook.config.FacebookConfiguration;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -26,8 +23,6 @@ public class MyApplicationConfig {
 
     @Autowired
     private AuthenticationProcessor authProcessor;
-    @Autowired
-    private HeaderProcessor headerProcessor;
 
 
     @Bean
@@ -37,9 +32,7 @@ public class MyApplicationConfig {
             public void configure() throws Exception {
                 restConfiguration().component("restlet").host("localhost").port(8080).bindingMode(RestBindingMode.auto);
                 onException(NotFoundException.class).handled(true).to("bean:loginController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
-                onException(AuthenticationException.class).handled(true).to("bean:authenticationProcessor?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
-                onException(CheckinException.class).handled(true).to("bean:checkinController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
-
+                onException(AuthenticationException.class).handled(true).to("bean:authenticationProcessor?method=handleError(*)").marshal().json(JsonLibrary.Jackson);;
                 
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
                 rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
@@ -54,7 +47,12 @@ public class MyApplicationConfig {
                 rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
-                rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+                
+                rest().post("/register").consumes("application/json").type(Customer.class)
+                .route().to("bean-validator:res") 
+                .marshal().json(JsonLibrary.Jackson).wireTap("file://customer").end()
+                .unmarshal().json(JsonLibrary.Jackson, Customer.class).to("bean:customerController?method=addCustomer(*)");
+                
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here
@@ -82,24 +80,17 @@ public class MyApplicationConfig {
                  * Payment route
                  * used patterns: content-based filter, validate
                  */
-                // exception handling for email validataion
-                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
-        		.marshal().json(JsonLibrary.Jackson);
-                
-                rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
-                .to("bean:paymentController?method=initPayment(${header.rid},*)")
-                .choice()
-                	.when(header("email").isEqualTo("1"))
-                		.to("bean:paymentController?method=sendEmailRegistered(*)")
-                	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
-                		.to("bean:paymentController?method=sendEmail(*)").endChoice()
-                .to("bean:paymentController?method=createBill(*)");
-                	
+                rest().post("/payment").route().process(authProcessor).to("bean-validator:res").to("bean:PaymentController?method=initPayment(*)")
+                        .choice()
+                        .when(header("email").isEqualTo(1))
+                        
+                        
+                        .to("bean:PaymentController?method=sendEmailRegistered(*)")
+                        .when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
+                        .to("bean:PaymentController?method=sendEmail(*)");
+
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
-                
-                
-                
             }
         };
     }
