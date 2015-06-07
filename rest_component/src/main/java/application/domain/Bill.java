@@ -1,13 +1,24 @@
 package application.domain;
 
 import java.io.Serializable;
-
-import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 /**
@@ -32,6 +43,12 @@ public class Bill implements Serializable {
 	@OneToMany(mappedBy="bill", fetch=FetchType.EAGER)
 	@JsonManagedReference(value="order-bill")
 	private List<Order> orders;
+	
+	//bi-directional many-to-one association to Billstatus
+	@ManyToOne
+	@JoinColumn(name="fk_id_billstatus")
+	@JsonBackReference(value="order-billstatus")
+	private Billstatus billstatus;
 
 	public Bill() {
 	}
@@ -72,6 +89,14 @@ public class Bill implements Serializable {
 		order.setBill(null);
 
 		return order;
+	}
+	
+	public Billstatus getBillstatus() {
+		return this.billstatus;
+	}
+
+	public void setBillstatus(Billstatus billstatus) {
+		this.billstatus = billstatus;
 	}
 
 }
