@@ -5,6 +5,7 @@ import application.domain.AuthenticationException;
 import application.domain.Customer;
 import application.domain.Reservation;
 import application.service.LoginFilter;
+import application.service.OrderFilter;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -47,7 +48,7 @@ public class MyApplicationConfig {
                 rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
-
+                rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class,"doesReservationBelongToUser(*)").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here
@@ -84,6 +85,9 @@ public class MyApplicationConfig {
 
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
+                
+                
+                
             }
         };
     }
