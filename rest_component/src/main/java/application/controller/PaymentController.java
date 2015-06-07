@@ -1,15 +1,18 @@
 package application.controller;
 
-import org.apache.camel.Header;
-import org.restlet.util.Series;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import application.domain.Bill;
+import application.service.TokenManager;
 
 @Component
 public class PaymentController {
 	
-	public Bill initPayment(@Header("org.restlet.http.headers") Series<?> headers) throws Exception {
+	@Autowired
+	private TokenManager tokenManager;
+	
+	public Bill initPayment() throws Exception {
 		return new Bill();
 	}
 }
