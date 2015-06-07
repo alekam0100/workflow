@@ -1,6 +1,7 @@
 package application.controller;
 
-import application.service.ReservationService;
+import application.service.CheckinService;
+import org.apache.camel.Exchange;
 import org.apache.camel.Header;
 import org.restlet.util.Series;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,26 +12,28 @@ import java.sql.Timestamp;
 @Component
 public class CheckinController {
     @Autowired
-    private ReservationService reservationService;
+    private CheckinService checkinService;
 
-    public boolean checkin(@Header("org.restlet.http.headers") Series<?> headers) throws Exception {
-        if (headers.getFirstValue("X-tableid") == null || headers.getFirstValue("X-timestamp") == null) {
-            throw new Exception("Missing data for checkin.");
+    public void checkin(String id, @Header("org.restlet.http.headers") Series<?> headers, Exchange exchange) {
+        if (id == null || id.isEmpty() || headers.getFirstValue("X-timestamp") == null) {
+            exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "400");
+            exchange.getOut().setBody("No table id or timestamp found");
+            return;
         }
-        String token = headers.getFirstValue("X-auth-token");
-        Integer tableId = Integer.parseInt(headers.getFirstValue("X-tableid"));
+
+
+        Integer tableId = Integer.parseInt(id);
         Timestamp timestamp = Timestamp.valueOf(headers.getFirstValue("X-timestamp"));
 
-        return reservationService.checkIn(tableId, token, timestamp);
-    }
+        try {
+            checkinService.checkIn(tableId, timestamp);
+        } catch (Exception e) {
+            exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, "400");
+            exchange.getOut().setBody(e.getMessage());
+            return;
+        }
 
-    public boolean facebook(@Header("org.restlet.http.headers") Series<?> headers) throws Exception {
-        String token = headers.getFirstValue("X-auth-token");
-        return reservationService.isCheckedIn(token);
-    }
-
-    public boolean twitter(@Header("org.restlet.http.headers") Series<?> headers) throws Exception {
-        String token = headers.getFirstValue("X-auth-token");
-        return reservationService.isCheckedIn(token);
+        exchange.getOut().setHeader("social", headers.getFirstValue("Social"));
+        exchange.getOut().setHeader("message", headers.getFirstValue("Message"));
     }
 }

@@ -98,32 +98,6 @@ CREATE TABLE IF NOT EXISTS `ordermgmt`.`customer` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `ordermgmt`.`checkin`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `ordermgmt`.`checkin` ;
-
-CREATE TABLE IF NOT EXISTS `ordermgmt`.`checkin` (
-  `pk_id_checkin` INT NOT NULL AUTO_INCREMENT,
-  `fk_id_customer` INT NULL,
-  `fk_id_restaurant_table` INT NULL,
-  PRIMARY KEY (`pk_id_checkin`),
-  UNIQUE INDEX `pk_idCheckin_UNIQUE` (`pk_id_checkin` ASC),
-  INDEX `fk_checkin_Customer1_idx` (`fk_id_customer` ASC),
-  INDEX `fk_checkin_Table1_idx` (`fk_id_restaurant_table` ASC),
-  CONSTRAINT `fk_checkin_Customer1`
-    FOREIGN KEY (`fk_id_customer`)
-    REFERENCES `ordermgmt`.`customer` (`fk_id_user`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_checkin_Table1`
-    FOREIGN KEY (`fk_id_restaurant_table`)
-    REFERENCES `ordermgmt`.`restaurant_table` (`pk_id_restaurant_table`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `ordermgmt`.`reservation_status`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `ordermgmt`.`reservation_status` ;

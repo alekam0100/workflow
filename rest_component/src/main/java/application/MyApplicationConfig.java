@@ -36,7 +36,7 @@ public class MyApplicationConfig {
                 
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
                 rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
-                
+
 
                 rest().post("/reservation").consumes("application/json").type(Reservation.class)
                         .route().process(authProcessor).to("bean-validator:res") // auth & validate
@@ -54,16 +54,20 @@ public class MyApplicationConfig {
                  * make .choice().when(header("method").isEqualTo("facebook")).to(beanblabla?method=facebook(*)
                  * link: http://camel.apache.org/content-based-router.html
                  */
-                rest().post("/facebook").route().process(authProcessor).to("bean:checkinController?method=facebook(*)")
-                        .to("facebook://postStatusMessage?message=I%20just%20checked%20into%20restaurant");
 
-                rest().post("/twitter").route().process(authProcessor).to("bean:checkinController?method=twitter(*)")
-                        .setBody(constant("I just checked into restaurant."))
-                        .to("twitter://timeline/user?" +
-                                "consumerKey=0jUNvvJfB6vTxuGsLxAUfnft9" +
-                                "&consumerSecret=FA5lOeaxCjks2AmUNyWWreVM9Zf7CiUSqodOfYPPYxdVlckD0t" +
-                                "&accessToken=906126062-U2EnxiQKTVPZV4D3v0LeE6B1yKhM0CCVGBjWgxE6" +
-                                "&accessTokenSecret=3KOWxtDJtal0tiuKRShTyz5XpJdPntBDcUewsstp2cUyL");
+                rest().post("/tables/{id}/checkin").route().process(authProcessor)
+                        .to("bean:checkinController?method=checkin(${header.id}, *)")
+                        .choice()
+                            .when(header("social").isEqualTo("facebook"))
+                            .to("facebook://postStatusMessage?message=I%20just%20checked%20into%20restaurant.")
+                        .when(header("social").isEqualTo("twitter"))
+                            .setBody(header("message"))
+                            .to("twitter://timeline/user?" +
+                                    "consumerKey=0jUNvvJfB6vTxuGsLxAUfnft9" +
+                                    "&consumerSecret=FA5lOeaxCjks2AmUNyWWreVM9Zf7CiUSqodOfYPPYxdVlckD0t" +
+                                    "&accessToken=906126062-U2EnxiQKTVPZV4D3v0LeE6B1yKhM0CCVGBjWgxE6" +
+                                    "&accessTokenSecret=3KOWxtDJtal0tiuKRShTyz5XpJdPntBDcUewsstp2cUyL");
+
 
                 rest().get("/food").route().process(authProcessor).to("bean:foodController?method=food(*)");
                 
@@ -72,18 +76,19 @@ public class MyApplicationConfig {
                  * used patterns: content-based filter, validate
                  */
                 rest().post("/payment").route().process(authProcessor).to("bean-validator:res").to("bean:PaymentController?method=initPayment(*)")
-                .choice()
-                	.when(header("email").isEqualTo(1))
-                		.to("bean:PaymentController?method=sendEmailRegistered(*)")
-                	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
-                		.to("bean:PaymentController?method=sendEmail(*)");
+                        .choice()
+                        .when(header("email").isEqualTo(1))
+                        .to("bean:PaymentController?method=sendEmailRegistered(*)")
+                        .when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
+                        .to("bean:PaymentController?method=sendEmail(*)");
+
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
             }
         };
     }
 
-//    @Bean
+    //    @Bean
 //    public HibernateValidationProviderResolver myValidationProviderResolver(){
 //        return new org.apache.camel.component.bean.validator.HibernateValidationProviderResolver();
 //    }
