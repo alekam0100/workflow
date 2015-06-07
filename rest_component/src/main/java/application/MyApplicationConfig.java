@@ -1,7 +1,11 @@
 package application;
 
+import javassist.NotFoundException;
+import application.domain.AuthenticationException;
 import application.domain.Customer;
 import application.domain.Reservation;
+import application.service.LoginFilter;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.facebook.config.FacebookConfiguration;
@@ -27,8 +31,11 @@ public class MyApplicationConfig {
             @Override
             public void configure() throws Exception {
                 restConfiguration().component("restlet").host("localhost").port(8080).bindingMode(RestBindingMode.auto);
+                onException(NotFoundException.class).handled(true).to("bean:loginController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
+                onException(AuthenticationException.class).handled(true).to("bean:authenticationProcessor?method=handleError(*)").marshal().json(JsonLibrary.Jackson);;
+                
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
-                rest().post("/login").route().to("bean:loginController?method=login(*)");
+                rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
                 
 
                 rest().post("/reservation").consumes("application/json").type(Reservation.class)
@@ -58,7 +65,6 @@ public class MyApplicationConfig {
                                 "&accessToken=906126062-U2EnxiQKTVPZV4D3v0LeE6B1yKhM0CCVGBjWgxE6" +
                                 "&accessTokenSecret=3KOWxtDJtal0tiuKRShTyz5XpJdPntBDcUewsstp2cUyL");
 
-                rest().post("/checkin").route().process(authProcessor).to("bean:checkinController?method=checkin(*)");
                 rest().get("/food").route().process(authProcessor).to("bean:foodController?method=food(*)");
                 
                 /*
