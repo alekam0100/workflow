@@ -1,16 +1,15 @@
 package application;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import application.exceptions.AuthenticationException;
+import application.service.AuthenticationService;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.restlet.util.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import application.exceptions.AuthenticationException;
-import application.service.AuthenticationService;
+import java.util.HashMap;
+import java.util.Map;
 @Component
 public class AuthenticationProcessor implements Processor{
 	@Autowired

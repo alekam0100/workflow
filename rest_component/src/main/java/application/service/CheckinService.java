@@ -1,12 +1,10 @@
 package application.service;
 
 import application.dataaccess.ReservationRepository;
+import application.dataaccess.ReservationstatusRepository;
 import application.dataaccess.RestaurantTableRepository;
 import application.dataaccess.TableStatusRepository;
-import application.domain.Customer;
-import application.domain.Reservation;
-import application.domain.RestaurantTable;
-import application.domain.User;
+import application.domain.*;
 import application.exceptions.CheckinException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,9 @@ public class CheckinService {
 
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
+    ReservationstatusRepository reservationstatusRepository;
 
     @Autowired
     private TokenManager tokenManager;
@@ -42,20 +43,22 @@ public class CheckinService {
 
         RestaurantTable table = tableRepository.findById(tableId);
         if (table == null)
-            throw new CheckinException("No table found: [tableId="+tableId+"]");
+            throw new CheckinException("No table found: [tableId=" + tableId + "]");
 
         if (table.getTableStatus().getStatus().compareToIgnoreCase("free") != 0) {
             // table is not free
-            throw new CheckinException("Table [tableId= "+tableId+"] is not free");
+            throw new CheckinException("Table [tableId= " + tableId + "] is not free");
         }
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Timestamp halfHourLater = new Timestamp(timestamp.getTime() + 30 * 60 * 1000); // plus 30 mins * 60 sec * 1000 millis
-        /* Reservation reservation = reservationRepository.findByTableAndTimeFromLessThanAndTimeToGreaterThan
-                (tableId, halfHourLater, halfHourLater);
+
+        Reservationstatus validStatus = reservationstatusRepository.findByStatusId(Reservationstatus.RESERVATIONSTATUS_VALID);
+        Reservation reservation = reservationRepository.findByTableAndTimeFromLessThanAndTimeToGreaterThan
+                (table, validStatus, halfHourLater, halfHourLater);
         if (reservation != null && reservation.getCustomer() != user.getCustomer())
             // there is a reservation not made by this user that start in less than 30mins, or ends in more than 30mins
-            throw new CheckinException("Table [tableId= "+tableId+"]: there is a reservation " +
+            throw new CheckinException("Table [tableId= " + tableId + "]: there is a reservation " +
                     "that starts in less than 30mins or ends in more than 30mins");
 
         // either, there is no reservation for this table - we are free to checkin
@@ -63,23 +66,22 @@ public class CheckinService {
         // either, there is a reservation by this user starting in less than 30 min - free to checkin
 
         // create a new reservation
-        if (reservation == null){
-           /* Vanja pls fix this lines.
+        if (reservation == null) {
             Reservation newRes = new Reservation();
-            newRes.setFkIdUser(user.getPkIdUser());
+            newRes.setCustomer(customer);
             newRes.setTimeFrom(timestamp);
             newRes.setTimeTo(new Timestamp(timestamp.getTime() + 90 * 60 * 1000));
-            newRes.setFkIdRestaurantTable(tableId);
+            newRes.setTable(table);
             newRes.setPersons(1);
-            newRes.setFkIdReservationStatus(1);
+            newRes.setReservationstatus(validStatus);
 
-            reservationRepository.saveAndFlush(newRes);*/
-       // }
+            reservationRepository.saveAndFlush(newRes);
+        }
 
 
         // change table status to occupied
-        /*table.setFkIdTableStatus(tableStatusRepository.findByStatus("occupied").getPkIdTablestatus());
-        tableRepository.saveAndFlush(table);*/
+        table.setTablestatus(tableStatusRepository.findByStatus("occupied"));
+        tableRepository.saveAndFlush(table);
 
         return true;
     }
