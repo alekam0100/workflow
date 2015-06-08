@@ -3,9 +3,7 @@ package application.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,7 +21,8 @@ public class Reservation implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="pk_id_reservation", unique=true, nullable=false)
-	private int pkIdReservation;
+	@Null // has to be null so it can be generated //todo
+	private Integer pkIdReservation;
 
 	@Min(1)
 	@Max(10)
@@ -32,10 +31,12 @@ public class Reservation implements Serializable {
 	
 	@NotNull
 	@Column(name="time_from")
+	@Future
 	private Timestamp timeFrom;
 	
 	@NotNull
 	@Column(name="time_to")
+	@Future
 	private Timestamp timeTo;
 
 	//bi-directional many-to-one association to Order
@@ -46,6 +47,7 @@ public class Reservation implements Serializable {
 	//bi-directional many-to-one association to Customer
 	@ManyToOne
 	@JoinColumn(name="fk_id_user")
+	@NotNull
 	//@JsonBackReference(value="reservation-customer")
 	private Customer customer;
 
@@ -60,16 +62,17 @@ public class Reservation implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="fk_id_restaurant_table")
 	//@JsonManagedReference(value="reservation-table")
+	@NotNull
 	private RestaurantTable table;
 
 	public Reservation() {
 	}
 
-	public int getPkIdReservation() {
+	public Integer getPkIdReservation() {
 		return this.pkIdReservation;
 	}
 
-	public void setPkIdReservation(int pkIdReservation) {
+	public void setPkIdReservation(Integer pkIdReservation) {
 		this.pkIdReservation = pkIdReservation;
 	}
 
