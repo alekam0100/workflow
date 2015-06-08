@@ -2,6 +2,7 @@ package application.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,14 @@ public class BillService {
 	private ReservationRepository reservationRepo;
 	
 	public Bill createBill(Reservation reservation, String mailTo) throws MissingServletRequestParameterException, ObjectNotFoundException, IOException {
+		List<Order> orders = reservation.getOrders();
+		if(orders.isEmpty())
+			return null;
 		Bill bill = new Bill();
 		bill.setIssuingDate(timeService.getCurrentTimestamp());
+		
 		for(Order order : reservation.getOrders()){
+			if(order.getBill()!=null) continue;
 			bill.setBillstatus(billStatusRepo.findOne(Billstatus.BILLSTATUS_OPEN));
 			order.setBill(bill);
 			if(bill.getOrders() == null)
@@ -45,5 +51,5 @@ public class BillService {
 		reservationRepo.save(reservation);
 		return bill;
 	}
-
+	
 }

@@ -26,26 +26,33 @@ public class PaymentController {
 	private TokenManager tokenManager;
 	@Autowired
 	private ReservationService resService;
+	@Autowired
 	private BillService billService;
 	
 	public void initPayment(String rid, Exchange exchange) throws Exception {
 		reservation = resService.getReservation(Integer.parseInt(rid));
+		if(reservation==null);
 	}
 	
 	public void sendEmailRegistered(Exchange exchange) {
 		email = tokenManager.getCurrentUser().getCustomer().getEmail();
 		exchange.getOut().setBody("send email to registered adress: " + email);
+		createBill(exchange);
 	}
 	
 	public void sendEmail(Exchange exchange, @Header("email") String email) {
 		this.email = email;
 		exchange.getOut().setBody("send email to: "+ email);
+		createBill(exchange);
 	}
 	
 	public void createBill(Exchange exchange) {
 		try {
 			Bill bill = billService.createBill(reservation, email);
-			map.put("bill_object",bill.toString());
+			if(bill == null)
+				map.put("error", "No orders found for your reservation");
+			else
+				map.put("bill_object",bill.toString());
 			exchange.getOut().setBody(map);
 		} catch (MissingServletRequestParameterException
 				| ObjectNotFoundException | IOException e) {

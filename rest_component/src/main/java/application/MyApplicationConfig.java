@@ -53,6 +53,7 @@ public class MyApplicationConfig {
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
                 rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here
@@ -78,7 +79,7 @@ public class MyApplicationConfig {
                 
                 /*
                  * Payment route
-                 * used patterns: content-based filter, validate
+                 * used patterns: content-based filter, validate, message translator (headerProcessor)
                  */
                 // exception handling for email validataion
 //                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
@@ -91,7 +92,8 @@ public class MyApplicationConfig {
                 		.to("bean:paymentController?method=sendEmailRegistered(*)")
                 	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
                 		.to("bean:paymentController?method=sendEmail(*)").endChoice()
-                .to("bean:paymentController?method=createBill(*)");
+                	.otherwise()
+                		.to("bean:paymentController?method=createBill(*)");
                 	
                 //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
                 //that are less than 2 or more than 3 letters (which is fine until they allow more).
