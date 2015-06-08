@@ -3,9 +3,11 @@ package application.domain;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.sql.Timestamp;
@@ -47,21 +49,22 @@ public class Order implements Serializable {
 	private Customer customer;
 
 	//bi-directional many-to-one association to Orderstatus
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="fk_id_orderstatus")
 	//@JsonBackReference(value="order-orderstatus")
 	private Orderstatus orderstatus;
 
 	//bi-directional many-to-one association to Reservation
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="fk_id_reservation")
-	@NotNull
+	@JsonIgnore
 	private Reservation reservation;
 
 	//bi-directional many-to-one association to Orderitem
 	@OneToMany(mappedBy="order", cascade = { CascadeType.PERSIST }, fetch=FetchType.EAGER)
 	@JsonManagedReference(value="orderitem-order")
 	@NotNull
+	@Valid
 	private List<Orderitem> orderitems;
 
 	public Order() {

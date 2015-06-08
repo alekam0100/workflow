@@ -24,4 +24,11 @@ public class OrderFilter {
 		}
 		return true;
 	}
+	
+	public boolean doesReservationBelongToUser2(Exchange exchange, int reservationId) {
+		if(!reservationRepo.exists(reservationId) || reservationRepo.findOne(reservationId).getCustomer().getFkIdUser() != tokenManager.getCurrentUser().getPkIdUser()) {
+			return false;
+		}
+		return true;
+	}
 }

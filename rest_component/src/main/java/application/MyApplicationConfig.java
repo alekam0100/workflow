@@ -1,5 +1,7 @@
 package application;
 
+import javax.persistence.EntityNotFoundException;
+
 import application.domain.Customer;
 import application.domain.Order;
 import application.domain.Reservation;
@@ -18,6 +20,9 @@ import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Configuration
 public class MyApplicationConfig {
@@ -42,7 +47,8 @@ public class MyApplicationConfig {
                 onException(NotFoundException.class).handled(true).to("bean:loginController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(AuthenticationException.class).handled(true).to("bean:authenticationProcessor?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(CheckinException.class).handled(true).to("bean:checkinController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
-
+                onException(JsonMappingException.class).handled(true).to("bean:jsonMappingExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
+                onException(DataIntegrityViolationException.class).handled(true).to("bean:dataIntegrityViolationExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
                 rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
@@ -58,9 +64,15 @@ public class MyApplicationConfig {
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
                 
-                rest("/reservation/{id}").post("orders").type(Order.class).route().process(authProcessor).
-                	onException(ValidationException.class).handled(true).to("bean:orderController?method=validationException(*)").marshal().json(JsonLibrary.Jackson).end()
-                	.to("bean-validator:order").process(contentEnrichProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+                rest("/reservation/{id}")
+                	.post("orders").type(Order.class).route().process(authProcessor)
+	                	.onException(ValidationException.class).handled(true).to("bean:orderController?method=validationException(*)").marshal().json(JsonLibrary.Jackson).end()
+	                	.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
+	                	.to("bean-validator:order").process(contentEnrichProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)");
+                rest("/reservation/{id}")
+                	.get("orders").type(Order.class).route().process(authProcessor)
+                		.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
+                		.filter().method(OrderFilter.class, "doesReservationBelongToUser2(*,${header.id})").to("bean:orderController?method=getOrders(*)").end().to("bean:orderController?method=evaluateResult(*)");
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here

@@ -21,7 +21,7 @@ public class Reservation implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="pk_id_reservation", unique=true, nullable=false)
-	@Null // has to be null so it can be generated //todo
+	//@Null // has to be null so it can be generated //todo
 	private Integer pkIdReservation;
 
 	@Min(1)
@@ -40,15 +40,15 @@ public class Reservation implements Serializable {
 	private Timestamp timeTo;
 
 	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="reservation",fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="reservation")
 	@JsonIgnore
 	private List<Order> orders;
 
 	//bi-directional many-to-one association to Customer
-	@ManyToOne(fetch=FetchType.EAGER)
+	//@JsonBackReference(value="reservation-customer")
+	@ManyToOne
 	@JoinColumn(name="fk_id_user")
 	@NotNull
-	//@JsonBackReference(value="reservation-customer")
 	private Customer customer;
 
 	//bi-directional many-to-one association to Reservationstatus
@@ -59,9 +59,9 @@ public class Reservation implements Serializable {
 	private Reservationstatus reservationstatus;
 
 	//bi-directional many-to-one association to Table
+	//@JsonManagedReference(value="reservation-table")
 	@ManyToOne
 	@JoinColumn(name="fk_id_restaurant_table")
-	//@JsonManagedReference(value="reservation-table")
 	@NotNull
 	private RestaurantTable table;
 
