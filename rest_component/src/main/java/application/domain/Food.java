@@ -3,9 +3,9 @@ package application.domain;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.List;
 
 
@@ -21,6 +21,7 @@ public class Food implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="pk_id_food", unique=true, nullable=false)
+	@Min(1)
 	private int pkIdFood;
 
 	@Column(nullable=false)

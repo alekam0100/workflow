@@ -1,13 +1,18 @@
 package application;
 
+import javax.persistence.EntityNotFoundException;
+
 import application.domain.Customer;
+import application.domain.Order;
 import application.domain.Reservation;
 import application.exceptions.AuthenticationException;
 import application.exceptions.CheckinException;
 import application.service.LoginFilter;
 import application.service.OrderFilter;
 import javassist.NotFoundException;
+
 import org.apache.camel.CamelContext;
+import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.facebook.config.FacebookConfiguration;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -15,6 +20,9 @@ import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Configuration
 public class MyApplicationConfig {
@@ -26,6 +34,8 @@ public class MyApplicationConfig {
     private AuthenticationProcessor authProcessor;
     @Autowired
     private HeaderProcessor headerProcessor;
+    @Autowired
+    private ContentEnrichProcessor contentEnrichProcessor;
 
 
     @Bean
@@ -37,7 +47,8 @@ public class MyApplicationConfig {
                 onException(NotFoundException.class).handled(true).to("bean:loginController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(AuthenticationException.class).handled(true).to("bean:authenticationProcessor?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(CheckinException.class).handled(true).to("bean:checkinController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
-
+                onException(JsonMappingException.class).handled(true).to("bean:jsonMappingExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
+                onException(DataIntegrityViolationException.class).handled(true).to("bean:dataIntegrityViolationExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
                 rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
@@ -52,13 +63,17 @@ public class MyApplicationConfig {
                 rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
-                rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
                 
-            /*    rest().post("/register").consumes("application/json").type(Customer.class)
-                .route().to("bean-validator:res") // auth & validate
-                .marshal().json(JsonLibrary.Jackson).wireTap("file://register").end()
-                .unmarshal().json(JsonLibrary.Jackson, Customer.class).to("bean:customerController?method=addCustomer(*)")
-        ; */
+                
+                rest("/reservation/{id}")
+                	.post("orders").type(Order.class).route().process(authProcessor)
+	                	.onException(ValidationException.class).handled(true).to("bean:orderController?method=validationException(*)").marshal().json(JsonLibrary.Jackson).end()
+	                	.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
+	                	.to("bean-validator:order").process(contentEnrichProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)");
+                rest("/reservation/{id}")
+                	.get("orders").type(Order.class).route().process(authProcessor)
+                		.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
+                		.filter().method(OrderFilter.class, "doesReservationBelongToUser2(*,${header.id})").to("bean:orderController?method=getOrders(*)").end().to("bean:orderController?method=evaluateResult(*)");
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
                 rest().get("/register").route().to("bean:customerController?method=getCustomer(*)");
                 rest().get("/register/my").route().to("bean:customerController?method=getMyCustomer(*)");

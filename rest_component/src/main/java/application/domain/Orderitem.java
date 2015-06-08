@@ -3,6 +3,9 @@ package application.domain;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -20,7 +23,9 @@ public class Orderitem implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="pk_id_orderitem", unique=true, nullable=false)
 	private int pkIdOrderitem;
-
+	
+	@NotNull
+	@Min(1)
 	private int amount;
 
 	@Column(length=1023)
@@ -29,6 +34,8 @@ public class Orderitem implements Serializable {
 	//bi-directional many-to-one association to Food
 	@ManyToOne
 	@JoinColumn(name="fk_id_food")
+	@NotNull
+	@Valid
 	private Food food;
 
 	//bi-directional many-to-one association to Order

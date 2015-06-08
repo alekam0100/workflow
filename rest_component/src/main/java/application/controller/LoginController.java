@@ -58,11 +58,12 @@ public class LoginController {
 		if((boolean)exchange.getProperty(Exchange.FILTER_MATCHED) == false) {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 			responseMap.put("error", "No credentials provided");
+			exchange.getOut().setBody(responseMap);
 		}
 		else {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
 			exchange.getOut().setHeader("X-auth-token",tokenManager.getCurrentUser().getToken());			
 		}
-		exchange.getOut().setBody(responseMap);
+		
 	}
 }
