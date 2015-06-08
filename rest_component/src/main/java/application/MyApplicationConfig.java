@@ -61,6 +61,7 @@ public class MyApplicationConfig {
         ; */
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
                 rest().get("/register").route().to("bean:customerController?method=getCustomer(*)");
+                rest().get("/register/my").route().to("bean:customerController?method=getMyCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here
                  * make .choice().when(header("method").isEqualTo("facebook")).to(beanblabla?method=facebook(*)
