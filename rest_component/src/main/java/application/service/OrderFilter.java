@@ -2,10 +2,13 @@ package application.service;
 
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import application.dataaccess.ReservationRepository;
 import application.domain.Order;
-
+@Transactional
+@Component
 public class OrderFilter {
 	
 	@Autowired

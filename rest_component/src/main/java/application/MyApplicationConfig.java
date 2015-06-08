@@ -1,13 +1,16 @@
 package application;
 
 import application.domain.Customer;
+import application.domain.Order;
 import application.domain.Reservation;
 import application.exceptions.AuthenticationException;
 import application.exceptions.CheckinException;
 import application.service.LoginFilter;
 import application.service.OrderFilter;
 import javassist.NotFoundException;
+
 import org.apache.camel.CamelContext;
+import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.facebook.config.FacebookConfiguration;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -26,6 +29,8 @@ public class MyApplicationConfig {
     private AuthenticationProcessor authProcessor;
     @Autowired
     private HeaderProcessor headerProcessor;
+    @Autowired
+    private ContentEnrichProcessor contentEnrichProcessor;
 
 
     @Bean
@@ -52,7 +57,10 @@ public class MyApplicationConfig {
                 rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
-                rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+                
+                rest("/reservation/{id}").post("orders").type(Order.class).route().process(authProcessor).
+                	onException(ValidationException.class).handled(true).to("bean:orderController?method=validationException(*)").marshal().json(JsonLibrary.Jackson).end()
+                	.to("bean-validator:order").process(contentEnrichProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here

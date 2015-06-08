@@ -40,12 +40,12 @@ public class Reservation implements Serializable {
 	private Timestamp timeTo;
 
 	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="reservation")
+	@OneToMany(mappedBy="reservation",fetch=FetchType.EAGER)
 	@JsonIgnore
 	private List<Order> orders;
 
 	//bi-directional many-to-one association to Customer
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="fk_id_user")
 	@NotNull
 	//@JsonBackReference(value="reservation-customer")

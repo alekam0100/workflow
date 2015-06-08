@@ -3,6 +3,7 @@ package application.domain;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -40,7 +41,7 @@ public class Order implements Serializable {
 	private Bill bill;
 
 	//bi-directional many-to-one association to Customer
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="fk_id_user")
 	@JsonBackReference(value="order-customer")
 	private Customer customer;
@@ -52,13 +53,15 @@ public class Order implements Serializable {
 	private Orderstatus orderstatus;
 
 	//bi-directional many-to-one association to Reservation
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="fk_id_reservation")
+	@NotNull
 	private Reservation reservation;
 
 	//bi-directional many-to-one association to Orderitem
 	@OneToMany(mappedBy="order", cascade = { CascadeType.PERSIST }, fetch=FetchType.EAGER)
 	@JsonManagedReference(value="orderitem-order")
+	@NotNull
 	private List<Orderitem> orderitems;
 
 	public Order() {
