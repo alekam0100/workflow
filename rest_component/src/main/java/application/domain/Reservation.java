@@ -1,14 +1,12 @@
 package application.domain;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -27,6 +25,9 @@ public class Reservation implements Serializable {
 	@Column(name="pk_id_reservation", unique=true, nullable=false)
 	private int pkIdReservation;
 
+	@Min(1)
+	@Max(10)
+	@NotNull
 	private Integer persons;
 	
 	@NotNull
@@ -45,19 +46,20 @@ public class Reservation implements Serializable {
 	//bi-directional many-to-one association to Customer
 	@ManyToOne
 	@JoinColumn(name="fk_id_user")
-	@JsonBackReference(value="reservation-customer")
+	//@JsonBackReference(value="reservation-customer")
 	private Customer customer;
 
 	//bi-directional many-to-one association to Reservationstatus
 	@ManyToOne
 	@JoinColumn(name="fk_id_reservation_status")
-	@JsonBackReference(value="reservation-reservationstatus")
+	//@JsonBackReference(value="reservation-reservationstatus")
+	@NotNull
 	private Reservationstatus reservationstatus;
 
 	//bi-directional many-to-one association to Table
 	@ManyToOne
 	@JoinColumn(name="fk_id_restaurant_table")
-	@JsonManagedReference(value="reservation-table")
+	//@JsonManagedReference(value="reservation-table")
 	private RestaurantTable table;
 
 	public Reservation() {

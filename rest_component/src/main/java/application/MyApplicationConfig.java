@@ -1,15 +1,13 @@
 package application;
 
-import application.exceptions.CheckinException;
-import javassist.NotFoundException;
-import application.exceptions.AuthenticationException;
 import application.domain.Customer;
 import application.domain.Reservation;
+import application.exceptions.AuthenticationException;
+import application.exceptions.CheckinException;
 import application.service.LoginFilter;
 import application.service.OrderFilter;
-
+import javassist.NotFoundException;
 import org.apache.camel.CamelContext;
-import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.facebook.config.FacebookConfiguration;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -83,8 +81,8 @@ public class MyApplicationConfig {
                  * used patterns: content-based filter, validate
                  */
                 // exception handling for email validataion
-                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
-        		.marshal().json(JsonLibrary.Jackson);
+//                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
+//        		.marshal().json(JsonLibrary.Jackson);
                 
                 rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
                 .to("bean:paymentController?method=initPayment(${header.rid},*)")

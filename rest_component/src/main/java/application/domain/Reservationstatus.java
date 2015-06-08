@@ -1,11 +1,9 @@
 package application.domain;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -30,7 +28,7 @@ public class Reservationstatus implements Serializable {
 
 	//bi-directional many-to-one association to Reservation
 	@OneToMany(mappedBy="reservationstatus")
-	@JsonManagedReference(value="reservation-reservationstatus")
+	@JsonBackReference(value="reservation-reservationstatus")
 	private List<Reservation> reservations;
 
 	public Reservationstatus() {

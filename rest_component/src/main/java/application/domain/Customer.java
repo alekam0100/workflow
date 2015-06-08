@@ -1,9 +1,9 @@
 package application.domain;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -51,6 +51,7 @@ public class Customer implements Serializable {
 	//bi-directional one-to-one association to User
 	@OneToOne
 	@JoinColumn(name="fk_id_user", nullable=false, insertable=false, updatable=false)
+	@JsonIgnore
 	private User user;
 
 	public Customer() {
