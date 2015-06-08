@@ -31,7 +31,6 @@ public class PaymentController {
 	
 	public void initPayment(String rid, Exchange exchange) throws Exception {
 		reservation = resService.getReservation(Integer.parseInt(rid));
-		if(reservation==null);
 	}
 	
 	public void sendEmailRegistered(Exchange exchange) {
@@ -50,7 +49,7 @@ public class PaymentController {
 		try {
 			Bill bill = billService.createBill(reservation, email);
 			if(bill == null)
-				map.put("error", "No orders found for your reservation");
+				map.put("error", "No open orders found for your reservation");
 			else
 				map.put("bill_object",bill.toString());
 			exchange.getOut().setBody(map);
@@ -58,8 +57,15 @@ public class PaymentController {
 				| ObjectNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
+	}
+	
+	public void billPayed(String rid, Exchange exchange) {
+		reservation = resService.getReservation(Integer.parseInt(rid));
+		billService.closeBill(reservation);
+		map = new HashMap<String, String>();
+		map.put("billstatus", "billstatus changed to closed");
+		exchange.getOut().setBody(map);
 	}
 	
 	public void validationException(Exchange exchange) {

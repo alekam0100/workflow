@@ -94,11 +94,8 @@ public class MyApplicationConfig {
                 		.to("bean:paymentController?method=sendEmail(*)").endChoice()
                 	.otherwise()
                 		.to("bean:paymentController?method=createBill(*)");
-                	
-                //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
-                //that are less than 2 or more than 3 letters (which is fine until they allow more).
                 
-                
+                rest().post("/reservation/{rid}/payed").route().process(authProcessor).to("bean:paymentController?method=billPayed(${header.rid},*)");
                 
             }
         };

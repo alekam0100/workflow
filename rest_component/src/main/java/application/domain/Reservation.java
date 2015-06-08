@@ -43,7 +43,7 @@ public class Reservation implements Serializable {
 	private Timestamp timeTo;
 
 	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="reservation", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="reservation", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	//@JsonIgnore
 	private List<Order> orders;
 

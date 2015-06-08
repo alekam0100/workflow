@@ -34,7 +34,7 @@ public class Order implements Serializable {
 	private Timestamp creationTime;
 
 	//bi-directional many-to-one association to Bill
-	@ManyToOne
+	@ManyToOne (cascade = CascadeType.ALL)
 	@JoinColumn(name="fk_id_bill")
 	@JsonBackReference(value="order-bill") 
 	private Bill bill;
