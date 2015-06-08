@@ -60,6 +60,7 @@ public class MyApplicationConfig {
                 .unmarshal().json(JsonLibrary.Jackson, Customer.class).to("bean:customerController?method=addCustomer(*)")
         ; */
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
+                rest().get("/register").route().to("bean:customerController?method=getCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here
                  * make .choice().when(header("method").isEqualTo("facebook")).to(beanblabla?method=facebook(*)
