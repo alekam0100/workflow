@@ -49,9 +49,9 @@ public class Customer implements Serializable {
 	private String street;
 
 	//bi-directional one-to-one association to User
-	@OneToOne
+	@OneToOne (cascade = {CascadeType.ALL})
 	@JoinColumn(name="fk_id_user", nullable=false, insertable=false, updatable=false)
-	@JsonIgnore
+	//@JsonIgnore
 	private User user;
 
 	public Customer() {

@@ -53,6 +53,12 @@ public class MyApplicationConfig {
                 rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
                 rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
                 rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+                
+            /*    rest().post("/register").consumes("application/json").type(Customer.class)
+                .route().to("bean-validator:res") // auth & validate
+                .marshal().json(JsonLibrary.Jackson).wireTap("file://register").end()
+                .unmarshal().json(JsonLibrary.Jackson, Customer.class).to("bean:customerController?method=addCustomer(*)")
+        ; */
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here

@@ -27,7 +27,7 @@ public class User implements Serializable {
 	private int pkIdUser;
 
 	@Column(length=45)
-	@JsonIgnore
+	//@JsonIgnore
 	private String password;
 
 	@Column(length=64)
