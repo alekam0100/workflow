@@ -2,6 +2,7 @@ package application.service;
 
 import application.dataaccess.ReservationRepository;
 import application.domain.Reservation;
+import application.domain.Reservationstatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,15 @@ public class ReservationService {
     }
 
     public List<Reservation> getAllReservations(boolean onlyValid, boolean onlyCurrentAndFuture) {
-        if (onlyValid) {
-
-            //	List<Reservation> toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
-            List<Reservation> toReturn = reservationRepository.findAll(); //todo
-            if (onlyCurrentAndFuture) {
+        if(onlyValid) {
+            List<Reservation> toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
+            if(onlyCurrentAndFuture) {
                 return filterCurrentAndFutureReservations(toReturn);
             }
             return toReturn;
 
         } else {
-            if (onlyCurrentAndFuture) {
+            if(onlyCurrentAndFuture) {
                 return filterCurrentAndFutureReservations(reservationRepository.findAll());
             }
             return reservationRepository.findAll();
@@ -49,9 +48,14 @@ public class ReservationService {
         return filtered;
     }
 
-    public List<Reservation> getMyReservations(boolean bool) {
-        List<Reservation> reservations = getAllReservations(false, false);//todo
-        return reservations;
+    @Autowired
+    CustomerService customerService;
+
+    public List<Reservation> getMyReservations(boolean onlyCurrentAndFuture) {
+        if(onlyCurrentAndFuture) {
+            return filterCurrentAndFutureReservations(reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer()));
+        }
+        return reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer());
     }
 
     public Reservation createReservation(Reservation reservation) {
