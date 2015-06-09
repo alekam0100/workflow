@@ -24,8 +24,10 @@ public class Orderitem implements Serializable {
 	@Column(name="pk_id_orderitem", unique=true, nullable=false)
 	private int pkIdOrderitem;
 	
+
 	@NotNull
 	@Min(1)
+	@Column(name="amount")
 	private int amount;
 
 	@Column(length=1023)

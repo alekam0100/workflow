@@ -28,6 +28,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 		</dependency>
+  
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -62,17 +63,17 @@
     		<artifactId>camel-facebook</artifactId>
     		<version>2.15.2</version>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-twitter</artifactId>
-            <version>2.15.2</version>
-        </dependency>
-        <dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-jpa</artifactId>
-    <version>2.15.2</version>
-</dependency>
-
+    <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-twitter</artifactId>
+        <version>2.15.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mail</artifactId>
+      <version>2.15.2</version>
+    </dependency>
+   
     </dependencies>
 
 

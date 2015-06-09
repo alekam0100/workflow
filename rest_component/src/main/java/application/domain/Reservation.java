@@ -1,9 +1,12 @@
 package application.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -40,8 +43,8 @@ public class Reservation implements Serializable {
 	private Timestamp timeTo;
 
 	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="reservation")
-	@JsonIgnore
+	@OneToMany(mappedBy="reservation", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	//@JsonIgnore
 	private List<Order> orders;
 
 	//bi-directional many-to-one association to Customer
@@ -54,7 +57,7 @@ public class Reservation implements Serializable {
 	//bi-directional many-to-one association to Reservationstatus
 	@ManyToOne
 	@JoinColumn(name="fk_id_reservation_status")
-	//@JsonBackReference(value="reservation-reservationstatus")
+	@JsonBackReference(value="reservation-reservationstatus")
 	@NotNull
 	private Reservationstatus reservationstatus;
 

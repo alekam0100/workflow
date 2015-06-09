@@ -74,6 +74,8 @@ public class MyApplicationConfig {
                 	.get("orders").type(Order.class).route().process(authProcessor)
                 		.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
                 		.filter().method(OrderFilter.class, "doesReservationBelongToUser2(*,${header.id})").to("bean:orderController?method=getOrders(*)").end().to("bean:orderController?method=evaluateResult(*)");
+                rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
                 rest().get("/register").route().to("bean:customerController?method=getCustomer(*)");
                 rest().get("/register/my").route().to("bean:customerController?method=getMyCustomer(*)");
@@ -101,25 +103,25 @@ public class MyApplicationConfig {
                 
                 /*
                  * Payment route
-                 * used patterns: content-based filter, validate
+                 * used patterns: content-based filter, validate, message translator (headerProcessor), content filter (filterEmailProcessor);
                  */
                 // exception handling for email validataion
 //                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
 //        		.marshal().json(JsonLibrary.Jackson);
                 
                 rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
-                .to("bean:paymentController?method=initPayment(${header.rid},*)")
+                .to("bean:paymentController?method=createBill(${header.rid},*)")
                 .choice()
                 	.when(header("email").isEqualTo("1"))
-                		.to("bean:paymentController?method=sendEmailRegistered(*)")
-                	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
-                		.to("bean:paymentController?method=sendEmail(*)").endChoice()
-                .to("bean:paymentController?method=createBill(*)");
-                	
-                //Simple email expression. Doesn't allow numbers in the domain name and doesn't allow for top level domains 
-                //that are less than 2 or more than 3 letters (which is fine until they allow more).
+                		.to("bean:paymentController?method=getEmailRegistered(*)")
+                		.setHeader("subject", constant("Your bill"))
+                		.to("smtps://smtp.gmail.com?username=wmpm.group09@gmail.com&password=wmpmgroup09")
+                	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$"))
+                		.setHeader("to", header("email"))
+                		.setHeader("subject", constant("Your bill"))
+                		.to("smtps://smtp.gmail.com?username=wmpm.group09@gmail.com&password=wmpmgroup09").endChoice();
                 
-                
+                rest().post("/reservation/{rid}/payed").route().process(authProcessor).to("bean:paymentController?method=billPayed(${header.rid},*)");
                 
             }
         };
