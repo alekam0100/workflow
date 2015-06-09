@@ -49,7 +49,7 @@ public class PaymentController {
 				exchange.getOut().setBody(map);
 			}
 			else {
-				exchange.getOut().setBody("Dear Mr./Mrs. " + cust.getFirstName() +",\n" + "your invoice:\n" + billService.getBillAmount(reservation));
+				exchange.getOut().setBody("Dear Mr./Mrs. " + cust.getFirstName() + " " + cust.getLastName() + ",\n" + "your invoice:\n" + billService.getBillAmount(reservation));
 				exchange.getOut().setHeader("email",exchange.getIn().getHeader("email"));
 			}
 		} catch (MissingServletRequestParameterException

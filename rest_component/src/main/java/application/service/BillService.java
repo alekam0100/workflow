@@ -61,10 +61,11 @@ public class BillService {
 		return bill;
 	}
 	
-	public HashMap<String, String> getBillAmount(Reservation reservation) {
+	public String getBillAmount(Reservation reservation) {
 		HashMap<String, Double> invoice = new HashMap<String, Double>();
 		List<Order> orders = reservation.getOrders();
 		double total = 0;
+		String output = "";
 		for(Order o : orders){
 			for(Orderitem oi : o.getOrderitems()){
 				int amount = oi.getAmount();
@@ -77,9 +78,8 @@ public class BillService {
 			}
 		}
 		invoice.put("total", total);
-		HashMap<String,String> output = new HashMap<String,String>();
 		for(String s : invoice.keySet()){
-			output.put(s, invoice.get(s).toString());
+			output += s + " " + invoice.get(s).toString() + "€\n";
 		}
 		return output;
 	}
