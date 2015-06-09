@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Configuration
@@ -48,6 +49,7 @@ public class MyApplicationConfig {
                 onException(AuthenticationException.class).handled(true).to("bean:authenticationProcessor?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(CheckinException.class).handled(true).to("bean:checkinController?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(JsonMappingException.class).handled(true).to("bean:jsonMappingExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
+                onException(JsonParseException.class).handled(true).to("bean:jsonMappingExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(DataIntegrityViolationException.class).handled(true).to("bean:dataIntegrityViolationExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
