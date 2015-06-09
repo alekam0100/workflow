@@ -62,9 +62,9 @@ public class MyApplicationConfig {
                         .unmarshal().json(JsonLibrary.Jackson, Reservation.class).to("bean:reservationController?method=createReservation(*)")
                 ;
 
-                rest().get("/reservation").route().to("bean:reservationController?method=getAllReservations(*)");
-                rest().get("/reservation/my").route().to("bean:reservationController?method=getMyReservations(*)");
-                rest().get("/reservation/{id}").route().to("bean:reservationController?method=getReservation(${header.id},*)");
+                rest().get("/reservation").route().process(authProcessor).to("bean:reservationController?method=getAllReservations(*)");
+                rest().get("/reservation/my").route().process(authProcessor).to("bean:reservationController?method=getMyReservations(*)");
+                rest().get("/reservation/{id}").route().process(authProcessor).to("bean:reservationController?method=getReservation(${header.id},*)");
                 
                 
                 rest("/reservation/{id}")

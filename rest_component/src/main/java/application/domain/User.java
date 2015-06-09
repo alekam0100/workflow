@@ -37,6 +37,7 @@ public class User implements Serializable {
 
 	//bi-directional one-to-one association to Customer
 	@OneToOne(mappedBy="user", optional = true)
+	@JsonIgnore
 	private Customer customer;
 
 	public User() {
