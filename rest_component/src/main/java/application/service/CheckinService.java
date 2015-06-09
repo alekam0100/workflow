@@ -50,7 +50,7 @@ public class CheckinService {
             throw new CheckinException("Table [tableId= " + tableId + "] is not free");
         }
 
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis() + 30 * 1000); // now plus 30 sec
         Timestamp halfHourLater = new Timestamp(timestamp.getTime() + 30 * 60 * 1000); // plus 30 mins * 60 sec * 1000 millis
 
         Reservationstatus validStatus = reservationstatusRepository.findByStatusId(Reservationstatus.RESERVATIONSTATUS_VALID);
