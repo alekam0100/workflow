@@ -35,6 +35,8 @@ public class CustomerService {
 	}
 	
 	public Customer addCustomer(Customer c) {
+		User u = uRepo.saveAndFlush(c.getUser());
+		c.setFkIdUser(u.getPkIdUser());
 		return cRepo.saveAndFlush(c);
 	}
 	

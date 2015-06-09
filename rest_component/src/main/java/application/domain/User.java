@@ -22,6 +22,7 @@ public class User implements Serializable {
     }
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="pk_id_user", unique=true, nullable=false)
 	private int pkIdUser;
 
