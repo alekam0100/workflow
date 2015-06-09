@@ -31,6 +31,7 @@ public class User implements Serializable {
 	private String password;
 
 	@Column(length=64)
+	@JsonIgnore
 	private String token;
 
 	@Column(nullable=false, length=45)
