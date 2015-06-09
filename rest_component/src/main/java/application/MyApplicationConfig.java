@@ -74,7 +74,6 @@ public class MyApplicationConfig {
                 	.get("orders").type(Order.class).route().process(authProcessor)
                 		.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
                 		.filter().method(OrderFilter.class, "doesReservationBelongToUser2(*,${header.id})").to("bean:orderController?method=getOrders(*)").end().to("bean:orderController?method=evaluateResult(*)");
-                rest("/reservation/{id}").post("orders").route().process(authProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean-validator:ordVal").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
 
                 rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
                 rest().get("/register").route().to("bean:customerController?method=getCustomer(*)");
