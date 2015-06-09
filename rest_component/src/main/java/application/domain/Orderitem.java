@@ -20,7 +20,8 @@ public class Orderitem implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="pk_id_orderitem", unique=true, nullable=false)
 	private int pkIdOrderitem;
-
+	
+	@Column(name="amount")
 	private int amount;
 
 	@Column(length=1023)

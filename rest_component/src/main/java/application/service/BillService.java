@@ -2,6 +2,7 @@ package application.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.ObjectNotFoundException;
@@ -16,6 +17,7 @@ import application.dataaccess.ReservationRepository;
 import application.domain.Bill;
 import application.domain.Billstatus;
 import application.domain.Order;
+import application.domain.Orderitem;
 import application.domain.Reservation;
 
 @Service
@@ -36,7 +38,7 @@ public class BillService {
 	@Autowired 
 	OrderRepository orderRepo;
 	
-	public Bill createBill(Reservation reservation, String mailTo) throws MissingServletRequestParameterException, ObjectNotFoundException, IOException {
+	public Bill createBill(Reservation reservation) throws MissingServletRequestParameterException, ObjectNotFoundException, IOException {
 		List<Order> orders = reservation.getOrders();
 		if(orders.isEmpty())
 			return null;
@@ -57,6 +59,29 @@ public class BillService {
 		reservationRepo.save(reservation);
 		
 		return bill;
+	}
+	
+	public HashMap<String, String> getBillAmount(Reservation reservation) {
+		HashMap<String, Double> invoice = new HashMap<String, Double>();
+		List<Order> orders = reservation.getOrders();
+		double total = 0;
+		for(Order o : orders){
+			for(Orderitem oi : o.getOrderitems()){
+				int amount = oi.getAmount();
+				String name = oi.getFood().getName();
+				double price = oi.getFood().getNetPrice();
+				if(invoice.containsKey(name))
+					invoice.put(name, invoice.get(name)+amount*price);
+				invoice.put(name, amount*price);
+				total += amount*price;
+			}
+		}
+		invoice.put("total", total);
+		HashMap<String,String> output = new HashMap<String,String>();
+		for(String s : invoice.keySet()){
+			output.put(s, invoice.get(s).toString());
+		}
+		return output;
 	}
 	
 	public Reservation closeBill(Reservation reservation){

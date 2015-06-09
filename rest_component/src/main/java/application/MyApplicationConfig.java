@@ -79,21 +79,23 @@ public class MyApplicationConfig {
                 
                 /*
                  * Payment route
-                 * used patterns: content-based filter, validate, message translator (headerProcessor)
+                 * used patterns: content-based filter, validate, message translator (headerProcessor), content filter (filterEmailProcessor);
                  */
                 // exception handling for email validataion
 //                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
 //        		.marshal().json(JsonLibrary.Jackson);
                 
                 rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
-                .to("bean:paymentController?method=initPayment(${header.rid},*)")
+                .to("bean:paymentController?method=createBill(${header.rid},*)")
                 .choice()
                 	.when(header("email").isEqualTo("1"))
-                		.to("bean:paymentController?method=sendEmailRegistered(*)")
-                	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$"))
-                		.to("bean:paymentController?method=sendEmail(*)").endChoice()
-                	.otherwise()
-                		.to("bean:paymentController?method=createBill(*)");
+                		.to("bean:paymentController?method=getEmailRegistered(*)")
+                		.setHeader("subject", constant("Your bill"))
+                		.to("smtps://smtp.gmail.com?username=wmpm.group09@gmail.com&password=wmpmgroup09")
+                	.when(header("email").isNotNull()).validate(header("email").regex("^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$"))
+                		.setHeader("to", header("email"))
+                		.setHeader("subject", constant("Your bill"))
+                		.to("smtps://smtp.gmail.com?username=wmpm.group09@gmail.com&password=wmpmgroup09").endChoice();
                 
                 rest().post("/reservation/{rid}/payed").route().process(authProcessor).to("bean:paymentController?method=billPayed(${header.rid},*)");
                 
