@@ -1,11 +1,14 @@
 package application.controller;
 
 import application.domain.Reservation;
+import application.exceptions.ConstraintsViolationException;
 import application.exceptions.ReservationException;
 import application.service.ReservationService;
+import javassist.tools.rmi.ObjectNotFoundException;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +55,19 @@ public class ReservationController {
 			reservation = reservationService.createReservation(reservation);
 			exchange.getOut().setBody(reservation);
 		} catch (ReservationException e) {
-
+			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("error", "This table is not available at the defined time");
+			exchange.getOut().setBody(map);
+		} catch (MissingServletRequestParameterException e) {
+			e.printStackTrace();
+		} catch (ObjectNotFoundException e) {
+			e.printStackTrace();
+		} catch (ConstraintsViolationException e) {
+			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("error", "This table is not available at the defined time");
+			exchange.getOut().setBody(map);
 		}
 	}
 

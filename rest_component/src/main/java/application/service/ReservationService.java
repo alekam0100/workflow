@@ -3,9 +3,14 @@ package application.service;
 import application.dataaccess.ReservationRepository;
 import application.domain.Reservation;
 import application.domain.Reservationstatus;
+import application.domain.RestaurantTable;
+import application.exceptions.ConstraintsViolationException;
 import application.exceptions.ReservationException;
+import application.validation.ReservationValidator;
+import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,9 @@ public class ReservationService {
 	ReservationRepository reservationRepository;
 
 	public Reservation getReservation(int id) {
-		return reservationRepository.findOne(id);
+		Reservation reservation = reservationRepository.findOne(id);
+
+		return reservation;
 	}
 
 	public List<Reservation> getAllReservations(boolean onlyValid, boolean onlyCurrentAndFuture) {
@@ -59,11 +66,31 @@ public class ReservationService {
 		return reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer());
 	}
 
-	public Reservation createReservation(Reservation reservation) throws ReservationException {
+	@Autowired
+	RestaurantTableService restaurantTableService;
+
+	@Autowired
+	ReservationValidator rValidator;
+
+
+	public Reservation createReservation(Reservation reservation) throws ReservationException, ConstraintsViolationException, ObjectNotFoundException, MissingServletRequestParameterException {
+
+		List<RestaurantTable> availableTables = restaurantTableService.getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(reservation.getTimeFrom(), reservation.getTimeTo(), reservation.getPersons());
+		boolean contained = false;
+		for (RestaurantTable t : availableTables) {
+			if (reservation.getTable().getPkIdRestaurantTable() == t.getPkIdRestaurantTable()) {
+				contained = true;
+			}
+		}
+		if (!contained) {
+			throw new ConstraintsViolationException("This table is not available at the defined time");
+		}
+
+		rValidator.validateRemoteReservationToBeAdded(reservation);
 		reservation.setCustomer(customerService.getMyCustomer());
-		Reservationstatus reservationstatus = new Reservationstatus();
-		reservationstatus.setPkIdReservationstatus(1);
-		reservation.setReservationstatus(reservationstatus);
+		reservation.setPkIdReservation(0);
+		reservation.setReservationstatus(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
 		return reservationRepository.saveAndFlush(reservation);
+
 	}
 }

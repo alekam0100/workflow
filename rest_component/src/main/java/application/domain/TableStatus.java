@@ -11,7 +11,19 @@ import java.io.Serializable;
 @NamedQuery(name = "TableStatus.findAll", query = "SELECT t FROM TableStatus t")
 public class TableStatus implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	//possible status of a table
+	/**
+	 * table is free
+	 */
+	public static final int TABLESTATUS_FREE = 1;
+	/**
+	 * table is reserved
+	 */
+	public static final int TABLESTATUS_RESERVED = 2;
+	/**
+	 * table is occupied
+	 */
+	public static final int TABLESTATUS_OCCUPIED = 3;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "pk_id_table_status", unique = true, nullable = false)
@@ -19,6 +31,12 @@ public class TableStatus implements Serializable {
 
 	@Column(name = "status", nullable = true)
 	private String status;
+public TableStatus(){
+
+}
+	public TableStatus(int stat) {
+		this.setPkIdTablestatus(stat);
+	}
 
 	public int getPkIdTablestatus() {
 		return pkIdTablestatus;

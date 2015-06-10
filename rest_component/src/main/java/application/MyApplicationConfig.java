@@ -59,6 +59,7 @@ public class MyApplicationConfig {
                         .onException(ValidationException.class).handled(true).to("bean:validationExceptionHandler?method=handleError(*)").end()
                         .marshal().json(JsonLibrary.Jackson).wireTap("file://reservations").end()
                         .unmarshal().json(JsonLibrary.Jackson, Reservation.class).to("bean:reservationController?method=createReservation(*)")
+
                 ;
 
                 rest().get("/reservation").route().process(authProcessor).to("bean:reservationController?method=getAllReservations(*)");
