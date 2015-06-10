@@ -6,7 +6,6 @@ import application.domain.Reservationstatus;
 import application.domain.RestaurantTable;
 import application.exceptions.ConstraintsViolationException;
 import application.exceptions.ReservationException;
-import application.validation.ReservationValidator;
 import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,17 @@ import java.util.List;
 public class ReservationService {
 
 	@Autowired
-	ReservationRepository reservationRepository;
+	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private RestaurantTableService restaurantTableService;
+	
+	@Autowired
+	private TimeService timeService;
+
+	@Autowired
+	private CustomerService customerService;
+
 
 	public Reservation getReservation(int id) {
 		Reservation reservation = reservationRepository.findOne(id);
@@ -43,8 +52,6 @@ public class ReservationService {
 		}
 	}
 
-	@Autowired
-	private TimeService timeService;
 
 	private List<Reservation> filterCurrentAndFutureReservations(List<Reservation> unfiltered) {
 		List<Reservation> filtered = new ArrayList<Reservation>();
@@ -56,8 +63,6 @@ public class ReservationService {
 		return filtered;
 	}
 
-	@Autowired
-	CustomerService customerService;
 
 	public List<Reservation> getMyReservations(boolean onlyCurrentAndFuture) {
 		if (onlyCurrentAndFuture) {
@@ -66,11 +71,6 @@ public class ReservationService {
 		return reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer());
 	}
 
-	@Autowired
-	RestaurantTableService restaurantTableService;
-
-	@Autowired
-	ReservationValidator rValidator;
 
 
 	public Reservation createReservation(Reservation reservation) throws ReservationException, ConstraintsViolationException, ObjectNotFoundException, MissingServletRequestParameterException {
@@ -86,7 +86,6 @@ public class ReservationService {
 			throw new ConstraintsViolationException("This table is not available at the defined time");
 		}
 
-		rValidator.validateRemoteReservationToBeAdded(reservation);
 		reservation.setCustomer(customerService.getMyCustomer());
 		reservation.setPkIdReservation(0);
 		reservation.setReservationstatus(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));

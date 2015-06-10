@@ -1,7 +1,11 @@
 package application.exceptions;
 
 public class CheckinException extends Exception {
-    private final String value;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final String value;
 
     public CheckinException(String value){
         this.value = value;

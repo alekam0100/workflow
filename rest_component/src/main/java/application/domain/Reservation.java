@@ -1,12 +1,14 @@
 package application.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -44,14 +46,14 @@ public class Reservation implements Serializable {
 
 	//bi-directional many-to-one association to Order
 	@OneToMany(mappedBy="reservation", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-	//@JsonIgnore
+	@JsonIgnore
 	private List<Order> orders;
 
 	//bi-directional many-to-one association to Customer
 	//@JsonBackReference(value="reservation-customer")
 	@ManyToOne
 	@JoinColumn(name="fk_id_user")
-	//@NotNull
+	@JsonIgnore
 	private Customer customer;
 
 	//bi-directional many-to-one association to Reservationstatus
