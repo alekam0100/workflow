@@ -37,7 +37,7 @@ public class ReservationController {
 		try {
 			Reservation reservation = reservationService.getReservation(Integer.parseInt(id));
 			if (reservation == null) {
-				throw new ReservationException();
+				throw new ReservationException("reservation not found");
 			} else {
 				exchange.getOut().setBody(reservation);
 			}
@@ -52,6 +52,9 @@ public class ReservationController {
 	public void createReservation(Exchange exchange) {
 		Reservation reservation = exchange.getIn().getBody(Reservation.class);
 		try {
+			if(reservation.getTimeFrom().after(reservation.getTimeTo())){
+				throw new ReservationException("dateTime validation error");
+			}
 			reservation = reservationService.createReservation(reservation);
 			exchange.getOut().setBody(reservation);
 		} catch (ReservationException e) {

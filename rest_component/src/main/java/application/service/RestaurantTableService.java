@@ -2,10 +2,10 @@ package application.service;
 
 import application.dataaccess.ReservationRepository;
 import application.dataaccess.RestaurantTableRepository;
-import application.domain.*;
+import application.domain.Reservation;
+import application.domain.Reservationstatus;
+import application.domain.RestaurantTable;
 import application.exceptions.ConstraintsViolationException;
-import application.validation.TableValidator;
-import application.validation.TimeValidator;
 import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +25,6 @@ public class RestaurantTableService {
 	private TokenManager tManager;
 	@Autowired
 	private TimeService timeService;
-	@Autowired
-	private TableValidator tValidator;
-	@Autowired
-	private TimeValidator timeValidator;
 
 	public List<RestaurantTable> getAllTables() {
 		return tRepo.findAll();
@@ -36,13 +32,11 @@ public class RestaurantTableService {
 
 	public RestaurantTable getTable(int tableId) throws ObjectNotFoundException {
 		RestaurantTable table = tRepo.findOne(tableId);
-		tValidator.validateTableNotNull(table);
 		return table;
 	}
 
 
 	public List<RestaurantTable> getAllTablesForNumberOfPersons(Integer numberOfPersons) {
-		tValidator.validateNumberOfPersons(numberOfPersons);
 
 		List<RestaurantTable> list = tRepo.findByMaxPersonGreaterThanEqual(numberOfPersons);
 		return list;
@@ -50,14 +44,11 @@ public class RestaurantTableService {
 
 
 	public List<RestaurantTable> getAllFreeTablesInTheDefinedTimePeriod(Timestamp timeFrom, Timestamp timeTo) throws ObjectNotFoundException, ConstraintsViolationException {
-		timeValidator.validateTimeInterval(timeFrom, timeTo);
-		return filterFreeTablesInTheDefinedTimePeriod(timeFrom, timeTo, getAllTables());
+	return filterFreeTablesInTheDefinedTimePeriod(timeFrom, timeTo, getAllTables());
 	}
 
 
 	public List<RestaurantTable> getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(Timestamp timeFrom, Timestamp timeTo, Integer numberOfPersons) throws ObjectNotFoundException, ConstraintsViolationException {
-		timeValidator.validateTimeInterval(timeFrom, timeTo);
-		tValidator.validateNumberOfPersons(numberOfPersons);
 		return filterFreeTablesInTheDefinedTimePeriod(timeFrom, timeTo, getAllTablesForNumberOfPersons(numberOfPersons));
 	}
 

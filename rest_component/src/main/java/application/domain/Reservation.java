@@ -5,69 +5,60 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
-
-/**
- * The persistent class for the reservation database table.
- * 
- */
 @Entity
-@NamedQuery(name="Reservation.findAll", query="SELECT r FROM Reservation r")
+@NamedQuery(name = "Reservation.findAll", query = "SELECT r FROM Reservation r")
 public class Reservation implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="pk_id_reservation", unique=true, nullable=false)
-	//@Null // has to be null so it can be generated //todo
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "pk_id_reservation", unique = true, nullable = false)
 	private Integer pkIdReservation;
 
+	@NotNull
 	@Min(1)
-	@Max(10)
-	@NotNull
 	private Integer persons;
-	
+
 	@NotNull
-	@Column(name="time_from")
-	@Future
+	@Future(message = "timefrom has to be in future")
+	@Column(name = "time_from")
 	private Timestamp timeFrom;
-	
+
 	@NotNull
-	@Column(name="time_to")
-	@Future
+	@Future(message = "timto has to be in future")
+	@Column(name = "time_to")
 	private Timestamp timeTo;
 
 	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="reservation", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "reservation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<Order> orders;
 
 	//bi-directional many-to-one association to Customer
 	//@JsonBackReference(value="reservation-customer")
 	@ManyToOne
-	@JoinColumn(name="fk_id_user")
+	@JoinColumn(name = "fk_id_user")
 	@JsonIgnore
 	private Customer customer;
 
 	//bi-directional many-to-one association to Reservationstatus
 	@ManyToOne
-	@JoinColumn(name="fk_id_reservation_status")
-	@JsonBackReference(value="reservation-reservationstatus")
-	//@NotNull
+	@JoinColumn(name = "fk_id_reservation_status")
+	@JsonBackReference(value = "reservation-reservationstatus")
 	private Reservationstatus reservationstatus;
 
 	//bi-directional many-to-one association to Table
 	//@JsonManagedReference(value="reservation-table")
 	@ManyToOne
-	@JoinColumn(name="fk_id_restaurant_table")
 	@NotNull
+	@JoinColumn(name = "fk_id_restaurant_table")
 	private RestaurantTable table;
 
 	public Reservation() {
