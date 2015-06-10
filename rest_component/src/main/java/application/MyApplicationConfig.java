@@ -49,7 +49,10 @@ public class MyApplicationConfig {
                 onException(JsonMappingException.class).handled(true).to("bean:jsonMappingExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(JsonParseException.class).handled(true).to("bean:jsonMappingExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 onException(DataIntegrityViolationException.class).handled(true).to("bean:dataIntegrityViolationExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
-                
+
+                //onException(IllegalArgumentException.class) .. //todo to avoid empty post request
+
+
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
                 rest().post("/login").route().throttle(10).timePeriodMillis(1000).filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
 

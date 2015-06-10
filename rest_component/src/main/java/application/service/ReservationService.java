@@ -29,7 +29,9 @@ public class ReservationService {
 
 	public Reservation getReservation(int id) {
 		Reservation reservation = reservationRepository.findOne(id);
-
+		if (reservation == null) {
+			//throw new ReservationException("reservation not found");
+		}
 		return reservation;
 	}
 
@@ -71,7 +73,12 @@ public class ReservationService {
 
 
 	public Reservation createReservation(Reservation reservation) throws ReservationException {
-
+//		if(reservation==null){
+//			throw new ReservationException("no reservation object"); //todo check routebuilder
+//		}
+		if (reservation.getTimeFrom().after(reservation.getTimeTo())) {
+			throw new ReservationException("dateTime validation error");
+		}
 		List<RestaurantTable> availableTables = restaurantTableService.getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(reservation.getTimeFrom(), reservation.getTimeTo(), reservation.getPersons());
 		boolean contained = false;
 		for (RestaurantTable t : availableTables) {

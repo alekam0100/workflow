@@ -12,7 +12,6 @@ public class ValidationExceptionHandler {
 		Throwable caused = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
 		exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 		Map<String, String> map = new HashMap<String, String>();
-		//map.put("error", "validation error!");
 		map.put("error", caused.getMessage());
 		exchange.getOut().setBody(map);
 	}

@@ -34,10 +34,9 @@ public class ReservationController {
 		try {
 			Reservation reservation = reservationService.getReservation(Integer.parseInt(id));
 			if (reservation == null) {
-				throw new ReservationException("reservation not found");
-			} else {
-				exchange.getOut().setBody(reservation);
+				throw new ReservationException("reservation not found"); //todo better throw in resService
 			}
+			exchange.getOut().setBody(reservation);
 		} catch (NumberFormatException | ReservationException e) {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 			Map<String, String> map = new HashMap<String, String>();
@@ -49,15 +48,12 @@ public class ReservationController {
 	public void createReservation(Exchange exchange) {
 		Reservation reservation = exchange.getIn().getBody(Reservation.class);
 		try {
-			if (reservation.getTimeFrom().after(reservation.getTimeTo())) {
-				throw new ReservationException("dateTime validation error");
-			}
 			reservation = reservationService.createReservation(reservation);
 			exchange.getOut().setBody(reservation);
 		} catch (ReservationException e) {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("error", "This table is not available at the defined time");
+			map.put("error", e.getMessage());
 			exchange.getOut().setBody(map);
 		}
 	}
