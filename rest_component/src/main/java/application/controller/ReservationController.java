@@ -1,14 +1,11 @@
 package application.controller;
 
 import application.domain.Reservation;
-import application.exceptions.ConstraintsViolationException;
 import application.exceptions.ReservationException;
 import application.service.ReservationService;
-import javassist.tools.rmi.ObjectNotFoundException;
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +41,7 @@ public class ReservationController {
 		} catch (NumberFormatException | ReservationException e) {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("error", "reservation not found");
+			map.put("error", e.getMessage());
 			exchange.getOut().setBody(map);
 		}
 	}
@@ -52,7 +49,7 @@ public class ReservationController {
 	public void createReservation(Exchange exchange) {
 		Reservation reservation = exchange.getIn().getBody(Reservation.class);
 		try {
-			if(reservation.getTimeFrom().after(reservation.getTimeTo())){
+			if (reservation.getTimeFrom().after(reservation.getTimeTo())) {
 				throw new ReservationException("dateTime validation error");
 			}
 			reservation = reservationService.createReservation(reservation);
@@ -61,19 +58,6 @@ public class ReservationController {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("error", "This table is not available at the defined time");
-			exchange.getOut().setBody(map);
-		} catch (MissingServletRequestParameterException e) {
-			e.printStackTrace();
-		} catch (ObjectNotFoundException e) {
-			e.printStackTrace();
-			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("error", "cannot book reservation");
-			exchange.getOut().setBody(map);
-		} catch (ConstraintsViolationException e) {
-			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("error", "cannot book reservation");
 			exchange.getOut().setBody(map);
 		}
 	}

@@ -4,12 +4,9 @@ import application.dataaccess.ReservationRepository;
 import application.domain.Reservation;
 import application.domain.Reservationstatus;
 import application.domain.RestaurantTable;
-import application.exceptions.ConstraintsViolationException;
 import application.exceptions.ReservationException;
-import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +70,7 @@ public class ReservationService {
 
 
 
-	public Reservation createReservation(Reservation reservation) throws ReservationException, ConstraintsViolationException, ObjectNotFoundException, MissingServletRequestParameterException {
+	public Reservation createReservation(Reservation reservation) throws ReservationException {
 
 		List<RestaurantTable> availableTables = restaurantTableService.getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(reservation.getTimeFrom(), reservation.getTimeTo(), reservation.getPersons());
 		boolean contained = false;
@@ -83,7 +80,7 @@ public class ReservationService {
 			}
 		}
 		if (!contained) {
-			throw new ConstraintsViolationException("This table is not available at the defined time");
+			throw new ReservationException("This table is not available at the defined time");
 		}
 
 		reservation.setCustomer(customerService.getMyCustomer());

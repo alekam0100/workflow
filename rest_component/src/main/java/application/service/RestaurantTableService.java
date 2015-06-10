@@ -5,8 +5,6 @@ import application.dataaccess.RestaurantTableRepository;
 import application.domain.Reservation;
 import application.domain.Reservationstatus;
 import application.domain.RestaurantTable;
-import application.exceptions.ConstraintsViolationException;
-import javassist.tools.rmi.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,44 +16,28 @@ import java.util.List;
 public class RestaurantTableService {
 
 	@Autowired
-	private RestaurantTableRepository tRepo;
-	@Autowired
-	private ReservationRepository rRepo;
-	@Autowired
-	private TokenManager tManager;
-	@Autowired
-	private TimeService timeService;
+	private RestaurantTableRepository tableRepository;
 
-	public List<RestaurantTable> getAllTables() {
-		return tRepo.findAll();
-	}
+	@Autowired
+	private ReservationRepository reservationRepository;
 
-	public RestaurantTable getTable(int tableId) throws ObjectNotFoundException {
-		RestaurantTable table = tRepo.findOne(tableId);
+	public RestaurantTable getTable(int tableId) {
+		RestaurantTable table = tableRepository.findOne(tableId);
 		return table;
 	}
 
-
 	public List<RestaurantTable> getAllTablesForNumberOfPersons(Integer numberOfPersons) {
 
-		List<RestaurantTable> list = tRepo.findByMaxPersonGreaterThanEqual(numberOfPersons);
+		List<RestaurantTable> list = tableRepository.findByMaxPersonGreaterThanEqual(numberOfPersons);
 		return list;
 	}
 
-
-	public List<RestaurantTable> getAllFreeTablesInTheDefinedTimePeriod(Timestamp timeFrom, Timestamp timeTo) throws ObjectNotFoundException, ConstraintsViolationException {
-	return filterFreeTablesInTheDefinedTimePeriod(timeFrom, timeTo, getAllTables());
-	}
-
-
-	public List<RestaurantTable> getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(Timestamp timeFrom, Timestamp timeTo, Integer numberOfPersons) throws ObjectNotFoundException, ConstraintsViolationException {
+	public List<RestaurantTable> getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(Timestamp timeFrom, Timestamp timeTo, Integer numberOfPersons) {
 		return filterFreeTablesInTheDefinedTimePeriod(timeFrom, timeTo, getAllTablesForNumberOfPersons(numberOfPersons));
 	}
 
 
-
-
-	private List<RestaurantTable> filterFreeTablesInTheDefinedTimePeriod(Timestamp timeFrom, Timestamp timeTo, List<RestaurantTable> tables) throws ObjectNotFoundException {
+	private List<RestaurantTable> filterFreeTablesInTheDefinedTimePeriod(Timestamp timeFrom, Timestamp timeTo, List<RestaurantTable> tables) {
 		List<RestaurantTable> toReturn = new ArrayList<RestaurantTable>();
 		for (RestaurantTable t : tables) {
 			if (checkTableReservations(t, timeFrom, timeTo)) {
@@ -66,7 +48,7 @@ public class RestaurantTableService {
 		return toReturn;
 	}
 
-	private boolean checkTableReservations(RestaurantTable table, Timestamp timeFrom, Timestamp timeTo) throws ObjectNotFoundException {
+	private boolean checkTableReservations(RestaurantTable table, Timestamp timeFrom, Timestamp timeTo) {
 
 		if (getValidReservations(table.getPkIdRestaurantTable(), timeFrom, timeTo).isEmpty()) {
 			return true;
@@ -76,8 +58,8 @@ public class RestaurantTableService {
 	}
 
 
-	private List<Reservation> getValidReservations(int tableId, Timestamp timeFrom, Timestamp timeTo) throws ObjectNotFoundException {
-		List<Reservation> allTableŔeservations = rRepo.findByTableOrderByTimeFromAsc(getTable(tableId));
+	private List<Reservation> getValidReservations(int tableId, Timestamp timeFrom, Timestamp timeTo) {
+		List<Reservation> allTableŔeservations = reservationRepository.findByTableOrderByTimeFromAsc(getTable(tableId));
 		List<Reservation> reservations = new ArrayList<Reservation>();
 		for (Reservation r : allTableŔeservations) {
 			if (((timeFrom.compareTo(r.getTimeFrom()) >= 0) && timeFrom.before(r.getTimeTo()))
