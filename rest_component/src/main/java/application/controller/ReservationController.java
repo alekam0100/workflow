@@ -58,8 +58,8 @@ public class ReservationController {
 	public Reservation createReservation(Exchange exchange) {
 		System.out.println("ReservationController.createReservation");
 		Reservation reservation = exchange.getIn().getBody(Reservation.class);
-		System.out.println(reservation);
+	//	System.out.println(reservation);
 //		return reservation;
-		return reservationService.createReservation(exchange.getIn().getBody(Reservation.class));
+		return reservationService.createReservation(reservation);
 	}
 }

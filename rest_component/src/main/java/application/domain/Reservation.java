@@ -1,12 +1,12 @@
 package application.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -51,14 +51,14 @@ public class Reservation implements Serializable {
 	//@JsonBackReference(value="reservation-customer")
 	@ManyToOne
 	@JoinColumn(name="fk_id_user")
-	@NotNull
+	//@NotNull
 	private Customer customer;
 
 	//bi-directional many-to-one association to Reservationstatus
 	@ManyToOne
 	@JoinColumn(name="fk_id_reservation_status")
 	@JsonBackReference(value="reservation-reservationstatus")
-	@NotNull
+	//@NotNull
 	private Reservationstatus reservationstatus;
 
 	//bi-directional many-to-one association to Table
@@ -69,6 +69,20 @@ public class Reservation implements Serializable {
 	private RestaurantTable table;
 
 	public Reservation() {
+	}
+
+	@Override
+	public String toString() {
+		return "Reservation{" +
+				"pkIdReservation=" + pkIdReservation +
+				", persons=" + persons +
+				", timeFrom=" + timeFrom +
+				", timeTo=" + timeTo +
+				", orders=" + orders +
+				", customer=" + customer +
+				", reservationstatus=" + reservationstatus +
+				", table=" + table +
+				'}';
 	}
 
 	public Integer getPkIdReservation() {
