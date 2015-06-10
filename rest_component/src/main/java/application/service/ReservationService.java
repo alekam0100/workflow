@@ -3,6 +3,7 @@ package application.service;
 import application.dataaccess.ReservationRepository;
 import application.domain.Reservation;
 import application.domain.Reservationstatus;
+import application.exceptions.ReservationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class ReservationService {
 		return reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer());
 	}
 
-	public Reservation createReservation(Reservation reservation) {
+	public Reservation createReservation(Reservation reservation) throws ReservationException {
 		reservation.setCustomer(customerService.getMyCustomer());
 		Reservationstatus reservationstatus = new Reservationstatus();
 		reservationstatus.setPkIdReservationstatus(1);

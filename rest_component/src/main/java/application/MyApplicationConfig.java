@@ -1,7 +1,5 @@
 package application;
 
-import javax.persistence.EntityNotFoundException;
-
 import application.domain.Customer;
 import application.domain.Order;
 import application.domain.Reservation;
@@ -9,8 +7,9 @@ import application.exceptions.AuthenticationException;
 import application.exceptions.CheckinException;
 import application.service.LoginFilter;
 import application.service.OrderFilter;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import javassist.NotFoundException;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.ValidationException;
 import org.apache.camel.builder.RouteBuilder;
@@ -22,8 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import javax.persistence.EntityNotFoundException;
 
 @Configuration
 public class MyApplicationConfig {
@@ -107,8 +105,8 @@ public class MyApplicationConfig {
                  * used patterns: content-based filter, validate, message translator (headerProcessor), content filter (filterEmailProcessor);
                  */
                 // exception handling for email validataion
-//                onException(ValidationException.class).handled(true).to("bean:paymentController?method=validationException(*)")
-//        		.marshal().json(JsonLibrary.Jackson);
+                onException(ValidationException.class).handled(true).to("bean:validationExceptionHandler?method=handleError(*)")
+        		.marshal().json(JsonLibrary.Jackson);
                 
                 rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
                 .to("bean:paymentController?method=createBill(${header.rid},*)")
