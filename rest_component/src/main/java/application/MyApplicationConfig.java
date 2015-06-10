@@ -51,7 +51,7 @@ public class MyApplicationConfig {
                 onException(DataIntegrityViolationException.class).handled(true).to("bean:dataIntegrityViolationExceptionHandler?method=handleError(*)").marshal().json(JsonLibrary.Jackson);
                 
                 rest().get("/greeting").route().process(authProcessor).to("bean:greetingController?method=greeting");
-                rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
+                rest().post("/login").route().throttle(10).timePeriodMillis(1000).filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
 
 
                 rest().post("/reservations").consumes("application/json").type(Reservation.class)
@@ -77,7 +77,7 @@ public class MyApplicationConfig {
                 		.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
                 		.filter().method(OrderFilter.class, "doesReservationBelongToUser2(*,${header.id})").to("bean:orderController?method=getOrders(*)").end().to("bean:orderController?method=evaluateResult(*)");
 
-                rest().post("/customers").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
+                rest().post("/customers").type(Customer.class).route().throttle(10).timePeriodMillis(1000).to("bean:customerController?method=addCustomer(*)");
                 rest().get("/customers").route().process(authProcessor).to("bean:customerController?method=getCustomer(*)");
                 rest().get("/customers/my").route().process(authProcessor).to("bean:customerController?method=getMyCustomer(*)");
 
