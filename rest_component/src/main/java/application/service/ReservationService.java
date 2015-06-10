@@ -16,10 +16,10 @@ public class ReservationService {
 
 	@Autowired
 	private ReservationRepository reservationRepository;
-	
+
 	@Autowired
 	private RestaurantTableService restaurantTableService;
-	
+
 	@Autowired
 	private TimeService timeService;
 
@@ -36,19 +36,16 @@ public class ReservationService {
 	}
 
 	public List<Reservation> getAllReservations(boolean onlyValid, boolean onlyCurrentAndFuture) {
+		List<Reservation> toReturn;
 		if (onlyValid) {
-			List<Reservation> toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
-			if (onlyCurrentAndFuture) {
-				return filterCurrentAndFutureReservations(toReturn);
-			}
-			return toReturn;
-
+			toReturn = reservationRepository.findByReservationstatusOrderByTimeFromAsc(new Reservationstatus(Reservationstatus.RESERVATIONSTATUS_VALID));
 		} else {
-			if (onlyCurrentAndFuture) {
-				return filterCurrentAndFutureReservations(reservationRepository.findAll());
-			}
-			return reservationRepository.findAll();
+			toReturn = reservationRepository.findAll();
 		}
+		if (onlyCurrentAndFuture) {
+			return filterCurrentAndFutureReservations(toReturn);
+		}
+		return toReturn;
 	}
 
 
@@ -61,8 +58,6 @@ public class ReservationService {
 		}
 		return filtered;
 	}
-
-
 	public List<Reservation> getMyReservations(boolean onlyCurrentAndFuture) {
 		if (onlyCurrentAndFuture) {
 			return filterCurrentAndFutureReservations(reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer()));
@@ -70,12 +65,7 @@ public class ReservationService {
 		return reservationRepository.findByCustomerOrderByTimeFromAsc(customerService.getMyCustomer());
 	}
 
-
-
 	public Reservation createReservation(Reservation reservation) throws ReservationException {
-//		if(reservation==null){
-//			throw new ReservationException("no reservation object"); //todo check routebuilder
-//		}
 		if (reservation.getTimeFrom().after(reservation.getTimeTo())) {
 			throw new ReservationException("dateTime validation error");
 		}

@@ -21,47 +21,23 @@ public class RestaurantTableService {
 	@Autowired
 	private ReservationRepository reservationRepository;
 
-	public RestaurantTable getTable(int tableId) {
-		RestaurantTable table = tableRepository.findOne(tableId);
-		return table;
-	}
-
-	public List<RestaurantTable> getAllTablesForNumberOfPersons(Integer numberOfPersons) {
-
-		List<RestaurantTable> list = tableRepository.findByMaxPersonGreaterThanEqual(numberOfPersons);
-		return list;
-	}
-
 	public List<RestaurantTable> getAllFreeTablesInTheDefinedTimePeriodForNumberOfPersons(Timestamp timeFrom, Timestamp timeTo, Integer numberOfPersons) {
-		return filterFreeTablesInTheDefinedTimePeriod(timeFrom, timeTo, getAllTablesForNumberOfPersons(numberOfPersons));
-	}
-
-
-	private List<RestaurantTable> filterFreeTablesInTheDefinedTimePeriod(Timestamp timeFrom, Timestamp timeTo, List<RestaurantTable> tables) {
+		List<RestaurantTable> tables = tableRepository.findByMaxPersonGreaterThanEqual(numberOfPersons);
 		List<RestaurantTable> toReturn = new ArrayList<RestaurantTable>();
 		for (RestaurantTable t : tables) {
-			if (checkTableReservations(t, timeFrom, timeTo)) {
+			if (getValidReservations(t.getPkIdRestaurantTable(), timeFrom, timeTo).isEmpty()) {
 				toReturn.add(t);
 			}
 		}
 
 		return toReturn;
-	}
-
-	private boolean checkTableReservations(RestaurantTable table, Timestamp timeFrom, Timestamp timeTo) {
-
-		if (getValidReservations(table.getPkIdRestaurantTable(), timeFrom, timeTo).isEmpty()) {
-			return true;
-		}
-		return false;
 
 	}
-
 
 	private List<Reservation> getValidReservations(int tableId, Timestamp timeFrom, Timestamp timeTo) {
-		List<Reservation> allTableŔeservations = reservationRepository.findByTableOrderByTimeFromAsc(getTable(tableId));
+		List<Reservation> allTableReservations = reservationRepository.findByTableOrderByTimeFromAsc(tableRepository.findOne(tableId));
 		List<Reservation> reservations = new ArrayList<Reservation>();
-		for (Reservation r : allTableŔeservations) {
+		for (Reservation r : allTableReservations) {
 			if (((timeFrom.compareTo(r.getTimeFrom()) >= 0) && timeFrom.before(r.getTimeTo()))
 					|| ((timeTo.compareTo(r.getTimeFrom()) > 0) && (timeTo.compareTo(r.getTimeTo()) <= 0))
 					|| ((timeFrom.compareTo(r.getTimeFrom()) <= 0) && (timeTo.compareTo(r.getTimeTo()) >= 0))

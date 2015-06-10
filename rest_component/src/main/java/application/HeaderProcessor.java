@@ -1,16 +1,15 @@
 package application;
 
-import java.util.Map;
-
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.restlet.util.Series;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 @Component
 public class HeaderProcessor implements Processor {
 
 	public HeaderProcessor() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
