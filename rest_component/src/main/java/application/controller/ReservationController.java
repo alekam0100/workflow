@@ -63,10 +63,14 @@ public class ReservationController {
 			e.printStackTrace();
 		} catch (ObjectNotFoundException e) {
 			e.printStackTrace();
+			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("error", "cannot book reservation");
+			exchange.getOut().setBody(map);
 		} catch (ConstraintsViolationException e) {
 			exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 400);
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("error", "This table is not available at the defined time");
+			map.put("error", "cannot book reservation");
 			exchange.getOut().setBody(map);
 		}
 	}
