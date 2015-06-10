@@ -54,7 +54,7 @@ public class MyApplicationConfig {
                 rest().post("/login").route().filter().method(LoginFilter.class,"areHeadersAvailable").to("bean:loginController?method=login(*)").end().to("bean:loginController?method=evaluateResult(*)").marshal().json(JsonLibrary.Jackson);
 
 
-                rest().post("/reservation").consumes("application/json").type(Reservation.class)
+                rest().post("/reservations").consumes("application/json").type(Reservation.class)
                         .route().process(authProcessor).to("bean-validator:res") // auth & validate
                         .onException(ValidationException.class).handled(true).to("bean:validationExceptionHandler?method=handleError(*)").end()
                         .marshal().json(JsonLibrary.Jackson).wireTap("file://reservations").end()
@@ -62,24 +62,24 @@ public class MyApplicationConfig {
 
                 ;
 
-                rest().get("/reservation").route().process(authProcessor).to("bean:reservationController?method=getAllReservations(*)");
-                rest().get("/reservation/my").route().process(authProcessor).to("bean:reservationController?method=getMyReservations(*)");
-                rest().get("/reservation/{id}").route().process(authProcessor).to("bean:reservationController?method=getReservation(${header.id},*)");
+                rest().get("/reservations").route().process(authProcessor).to("bean:reservationController?method=getAllReservations(*)");
+                rest().get("/reservations/my").route().process(authProcessor).to("bean:reservationController?method=getMyReservations(*)");
+                rest().get("/reservations/{id}").route().process(authProcessor).to("bean:reservationController?method=getReservation(${header.id},*)");
                 
                 
-                rest("/reservation/{id}")
+                rest("/reservations/{id}")
                 	.post("orders").type(Order.class).route().process(authProcessor)
 	                	.onException(ValidationException.class).handled(true).to("bean:orderController?method=validationException(*)").marshal().json(JsonLibrary.Jackson).end()
 	                	.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
 	                	.to("bean-validator:order").process(contentEnrichProcessor).filter().method(OrderFilter.class, "doesReservationBelongToUser(*,${header.id})").to("bean:orderController?method=saveOrder(*)").end().to("bean:orderController?method=evaluateResult(*)");
-                rest("/reservation/{id}")
+                rest("/reservations/{id}")
                 	.get("orders").type(Order.class).route().process(authProcessor)
                 		.onException(EntityNotFoundException.class).handled(true).to("bean:orderController?method=notFoundException(*)").marshal().json(JsonLibrary.Jackson).end()
                 		.filter().method(OrderFilter.class, "doesReservationBelongToUser2(*,${header.id})").to("bean:orderController?method=getOrders(*)").end().to("bean:orderController?method=evaluateResult(*)");
 
-                rest().post("/register").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
-                rest().get("/register").route().process(authProcessor).to("bean:customerController?method=getCustomer(*)");
-                rest().get("/register/my").route().process(authProcessor).to("bean:customerController?method=getMyCustomer(*)");
+                rest().post("/customers").type(Customer.class).route().to("bean:customerController?method=addCustomer(*)");
+                rest().get("/customers").route().process(authProcessor).to("bean:customerController?method=getCustomer(*)");
+                rest().get("/customers/my").route().process(authProcessor).to("bean:customerController?method=getMyCustomer(*)");
 
                 /* implement content-based router -> add header parameter "method" in your payload in postman and here
                  * make .choice().when(header("method").isEqualTo("facebook")).to(beanblabla?method=facebook(*)
@@ -100,7 +100,7 @@ public class MyApplicationConfig {
                                     "&accessTokenSecret=3KOWxtDJtal0tiuKRShTyz5XpJdPntBDcUewsstp2cUyL");
 
 
-                rest().get("/food").route().process(authProcessor).to("bean:foodController?method=food(*)");
+                rest().get("/foods").route().process(authProcessor).to("bean:foodController?method=food(*)");
                 
                 /*
                  * Payment route
@@ -110,7 +110,7 @@ public class MyApplicationConfig {
                 onException(ValidationException.class).handled(true).to("bean:validationExceptionHandler?method=handleError(*)")
         		.marshal().json(JsonLibrary.Jackson);
                 
-                rest().post("/reservation/{rid}/payment").route().process(authProcessor).process(headerProcessor)
+                rest().post("/reservations/{rid}/payment").route().process(authProcessor).process(headerProcessor)
                 .to("bean:paymentController?method=createBill(${header.rid},*)")
                 .choice()
                 	.when(header("email").isEqualTo("1"))
@@ -122,7 +122,7 @@ public class MyApplicationConfig {
                 		.setHeader("subject", constant("Your bill"))
                 		.to("smtps://smtp.gmail.com?username=wmpm.group09@gmail.com&password=wmpmgroup09").endChoice();
                 
-                rest().post("/reservation/{rid}/payed").route().process(authProcessor).to("bean:paymentController?method=billPayed(${header.rid},*)");
+                rest().post("/reservations/{rid}/payed").route().process(authProcessor).to("bean:paymentController?method=billPayed(${header.rid},*)");
                 
             }
         };
