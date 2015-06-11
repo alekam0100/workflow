@@ -63,6 +63,7 @@ public class BillService {
 	
 	public String getBillAmount(Reservation reservation) {
 		HashMap<String, Double> invoice = new HashMap<String, Double>();
+		HashMap<String, Integer> amountFood = new HashMap<String, Integer>();
 		List<Order> orders = reservation.getOrders();
 		double total = 0;
 		String output = "";
@@ -71,16 +72,22 @@ public class BillService {
 				int amount = oi.getAmount();
 				String name = oi.getFood().getName();
 				double price = oi.getFood().getNetPrice();
-				if(invoice.containsKey(name))
-					invoice.put(name, invoice.get(name)+amount*price);
-				invoice.put(name, amount*price);
-				total += amount*price;
+				if(amountFood.containsKey(name)){
+					amountFood.put(name, amountFood.get(name) + amount);
+				}
+				invoice.put(name, price);
+				amountFood.put(name, amount);
 			}
 		}
-		invoice.put("total", total);
+		int no = 0;
+		double price = 0;
 		for(String s : invoice.keySet()){
-			output += s + " " + invoice.get(s).toString() + "€\n";
+			no = amountFood.get(s);
+			price = invoice.get(s);
+			output += no + "x " + s + " a " + price + "€ = " + no * price + "€\n";
+			total += no*price;
 		}
+		output += "Total amount: " + total + "€\n";
 		return output;
 	}
 	
