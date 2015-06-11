@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.Header;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,6 @@ public class PaymentController {
 	private HashMap<String, Object> map = new HashMap<String, Object>();
 	private Reservation reservation;
 	private Customer cust;
-	private String rid;
 	
 	@Autowired
 	private TokenManager tokenManager;
@@ -37,7 +35,6 @@ public class PaymentController {
 	}
 	
 	public void createBill(String rid, Exchange exchange) {
-		this.rid = rid;
 		cust = tokenManager.getCurrentUser().getCustomer();
 		reservation = resService.getReservation(Integer.parseInt(rid));
 		map = new HashMap<String, Object>();
