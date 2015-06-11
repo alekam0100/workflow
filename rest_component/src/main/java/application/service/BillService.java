@@ -79,7 +79,7 @@ public class BillService {
 		}
 		invoice.put("total", total);
 		for(String s : invoice.keySet()){
-			output += s + " " + invoice.get(s).toString() + "â‚¬\n";
+			output += s + " " + invoice.get(s).toString() + "€\n";
 		}
 		return output;
 	}
